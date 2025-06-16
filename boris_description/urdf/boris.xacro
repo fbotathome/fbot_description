@@ -12,11 +12,8 @@
   <xacro:include filename="$(find hector_models)/gazebo/orbbec_astra2.gazebo.xacro" />
   <xacro:include filename="$(find shark_description)/urdf/shark.xacro" />
   <xacro:include filename="$(find sensors_description)/urdf/realsense_camera.urdf.xacro" />
-<<<<<<<< HEAD:boris_description/urdf/boris_no_head.xacro
-========
   <xacro:include filename="$(find boris_head_description)/urdf/boris_head.urdf" />
   <xacro:include filename="$(find boris_head_description)/urdf/control.urdf.xacro" />
->>>>>>>> 93e826d279d8fb6aa67524b843256b4a2e869ada:boris_description/urdf/boris.xacro
 
   <xacro:property name="base_width" value="0.336" />
   <xacro:property name="base_len" value="0.5" />
@@ -66,11 +63,8 @@
   </xacro:macro>
 
 
-<<<<<<<< HEAD:boris_description/urdf/boris_no_head.xacro
-========
   <xacro:sick_lms1xx robot_namespace="/lms1xx" />
 
->>>>>>>> 93e826d279d8fb6aa67524b843256b4a2e869ada:boris_description/urdf/boris.xacro
   <xacro:macro name="dorso" params="parent depth width height xyz rpy">
     <link name="dorso_link">
       <xacro:box_inertia m="1" w="${width}" h="${height}" d="0.01" />
@@ -117,8 +111,6 @@
     </joint>
   </xacro:macro>
 
-<<<<<<<< HEAD:boris_description/urdf/boris_no_head.xacro
-========
   
   <joint name="laser_joint" type="fixed">
     <origin xyz="${base_len/2 + 0.017 + 0.05} 0 ${0.02 + base_height/2}" rpy="0 0 0" />
@@ -141,7 +133,6 @@
   </xacro:orbbec_astra2>
   <xacro:orbbec_astra2_gazebo name="top_camera"/>
 
->>>>>>>> 93e826d279d8fb6aa67524b843256b4a2e869ada:boris_description/urdf/boris.xacro
   <xacro:dorso parent="base_link" depth="${dorso_len}" width="${dorso_width}" height="${dorso_height}" xyz="${-base_len/2 + (dorso_len/2)} 0 ${base_height/2}" rpy="0 0 0"/>
   <xacro:arm_support parent="dorso_link" width="${arm_support_width}" height="${arm_support_height}" depth="${arm_support_len}" xyz="${dorso_len/2 + arm_support_len/2} 0 ${arm_z_position}" rpy="0 0 0"/>
   <xacro:imu parent="base_link" xyz="-0.01 0 ${0.02 - base_height/2}" rpy="-0.014161 -0.0203861 0" />
