@@ -121,8 +121,6 @@
     <origin xyz="0 0 ${dorso_height + 0.04}" rpy="0 0 0" />
   </joint> -->
 
-<<<<<<< HEAD:boris_description/urdf/boris_description.xacro
-<<<<<<< HEAD:boris_description/urdf/boris_description.xacro
   <!-- <joint name="arm_to_robot" type="fixed">
     <origin xyz="0.1 0 ${arm_support_height/2}" rpy="0 0 0"/>
     <parent link="arm_support_link"/>
@@ -139,14 +137,11 @@
     </xacro:macro>
 
   <xacro:realsense_camera name="camera" parent="dorso_link" xyz="${dorso_len/2 + 0.05} 0 ${dorso_height + 0.053}" rpy="0 0 0"/>
-=======
   <xacro:realsense_camera name="camera" parent="dorso_link">
     <origin xyz="${dorso_len/2 + 0.05} 0 ${dorso_height + 0.053}" rpy="0 0 ${3.14/8}" />
   </xacro:realsense_camera>
   <xacro:realsense_gazebo />
   <xacro:add_optical_frame name="camera_link" />
->>>>>>> 46ae7d8 (Add caster wheel for gazebo simulation):boris_description/urdf/boris.xacro
-=======
   <xacro:camera_turret parent="dorso_link" name="camera_turret">
     <origin xyz="${dorso_len/2 + 0.05} 0 ${dorso_height + 0.053}" rpy="0 0 ${3.14/8}" />
   </xacro:camera_turret>
@@ -154,25 +149,19 @@
     <parent link="camera_turret_tilt_link"/>
     <origin rpy="0 0 -${M_PI/6}" xyz="0.06705 0 -0.00425"/>
   </xacro:orbbec_astra2>
-<<<<<<< HEAD:boris_description/urdf/boris_description.xacro
   <xacro:orbbec_astra2_gazebo name="top_camera" semantic_segmentation="false"/>
->>>>>>> d617c95 (changes to xacros):boris_description/urdf/boris.xacro
-=======
   <xacro:orbbec_astra2_gazebo name="top_camera"/>
->>>>>>> f3a188e (Changes to make it possible to simulate Boris on Ignition.):boris_description/urdf/boris.xacro
 
   <xacro:dorso parent="base_link" depth="${dorso_len}" width="${dorso_width}" height="${dorso_height}" xyz="${-base_len/2 + (dorso_len/2)} 0 ${base_height/2}" rpy="0 0 0"/>
   <xacro:arm_support parent="dorso_link" width="${arm_support_width}" height="${arm_support_height}" depth="${arm_support_len}" xyz="${dorso_len/2 + arm_support_len/2} 0 ${arm_z_position}" rpy="0 0 0"/>
   <xacro:sensor_hokuyo parent="base_link" xyz="${base_len/2 + 0.017 + 0.024} 0 ${0.02 - base_height/2}" rpy="3.14 0 0" name="ground"/>
   <xacro:sensor_hokuyo parent="base_link" xyz="${-base_len/2 - 0.017 - 0.024} 0 ${0.02 - base_height/2}" rpy="3.14 0 3.14" name="back"/>
-<<<<<<< HEAD:boris_description/urdf/boris_description.xacro
   <!-- <xacro:imu parent="base_link" xyz="-0.01 0 ${0.02 - base_height/2}" rpy="-0.014161 -0.0203861 0" /> -->
   <!-- <xacro:boris_arm parent="arm_support_link" xyz="0.1 0 ${arm_support_height/2}" rpy="0 0 0"/> -->
   <!-- <xacro:rgb_cam parent="wx200/gripper_bar_link" name="webcam" xyz="-0.078 0.0 0.05" rpy="0 0 0"/> -->
   <xacro:imu parent="base_link" xyz="${base_len/2 + 0.0625} 0 ${0.02 - base_height/2}" rpy="0 0 0"/>
   <xacro:shark_base/>  <!-- isso aq n existe mais, a gente reverteu as mudanças do luis que transformavam aquilo tudo em um macro q n ta aparecendo mais -->
 </robot>
-=======
   <xacro:imu parent="base_link" xyz="-0.01 0 ${0.02 - base_height/2}" rpy="-0.014161 -0.0203861 0" />
 
   <gazebo reference="dorso_link">
@@ -183,4 +172,3 @@
     <material>Gazebo/DarkGray</material>
   </gazebo>
 </robot>
->>>>>>> 46ae7d8 (Add caster wheel for gazebo simulation):boris_description/urdf/boris.xacro
