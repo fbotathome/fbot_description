@@ -59,7 +59,7 @@ hoverboard_base_controller:
 /wx200:
   controller_manager:
     ros__parameters:
-      update_rate: 1000
+      update_rate: 100
       joint_state_broadcaster:
         type: joint_state_broadcaster/JointStateBroadcaster
       arm_controller:
@@ -102,6 +102,6 @@ hoverboard_base_controller:
         - elbow
         - wrist_angle
         - wrist_rotate
-        - gripper
+        #- gripper
         - left_finger
         - right_finger

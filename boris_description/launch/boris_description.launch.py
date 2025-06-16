@@ -60,9 +60,21 @@ def generate_launch_description():
         ),
         launch_arguments={
             'robot_model': 'wx200',
-            'use_rviz': 'false'
+            'use_rviz': 'false',
+            'use_world_frame': 'false',
         }.items(),
     )
+
+    # navigation = IncludeLaunchDescription(
+    #     PythonLaunchDescriptionSource(
+    #         os.path.join(
+    #             get_package_share_directory("fbot_navigation"), 'launch', 'navigation.launch.py')
+    #     ),
+    #     launch_arguments={
+    #         'use_description': 'false',
+    #         'use_rviz': 'true'
+    #     }.items(),
+    # )
 
     rviz_config_file = PathJoinSubstitution(
         [FindPackageShare("boris_description"), "rviz", "boris.rviz"]
@@ -71,11 +83,12 @@ def generate_launch_description():
     control_node = Node(
         package="controller_manager",
         executable="ros2_control_node",
-        parameters=[robot_description, robot_controllers],
+        parameters=[robot_controllers],
         output="both",
         remappings=[
             ("/hoverboard_base_controller/cmd_vel_unstamped", "/cmd_vel"),
             ("/hoverboard_base_controller/odom", "/odom"),
+            ("~/robot_description", "/robot_description")
         ],
     )
 
@@ -91,7 +104,7 @@ def generate_launch_description():
         name="joint_state_publisher",
         output="both",
         parameters=[{
-            'source_list': ['/boris_head/joint_states', '/wx200/joint_states'],
+            'source_list': ['/boris_head/joint_states'],
         }],
     )
     rviz_node = Node(
@@ -109,7 +122,7 @@ def generate_launch_description():
         arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
     )
 
-    robot_controller_spawner = Node(
+    base_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
         arguments=["hoverboard_base_controller", "--controller-manager", "/controller_manager"],
@@ -127,19 +140,21 @@ def generate_launch_description():
     delay_robot_controller_spawner_after_joint_state_broadcaster_spawner = RegisterEventHandler(
         event_handler=OnProcessExit(
             target_action=joint_state_broadcaster_spawner,
-            on_exit=[robot_controller_spawner],
+            on_exit=[base_controller_spawner],
         )
     )
 
     nodes = [
-        control_node,
         robot_state_pub_node,
+        control_node,
         joint_state_publisher_node,
         joint_state_broadcaster_spawner,
-        rviz_node,
         #delay_rviz_after_joint_state_broadcaster_spawner,
-        delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,
+        #delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,
+        base_controller_spawner,
+        rviz_node,
         interbotix_arm_control,
+        # navigation
         # robot_localization,
     ]
 

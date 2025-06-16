@@ -7,7 +7,6 @@
   <xacro:include filename="$(find sensors_description)/urdf/rgb_cam.xacro" />
   <xacro:include filename="$(find sensors_description)/urdf/realsense_camera.xacro" />
   <xacro:include filename="$(find boris_head_description)/urdf/boris_head.urdf" />
-  <xacro:include filename="$(find interbotix_xsarm_descriptions)/urdf/wx200.urdf.xacro" />
 
   <!-- <xacro:include filename="$(find boris_description)/ros2_control/shark_ros2_control.xacro" /> -->
 
