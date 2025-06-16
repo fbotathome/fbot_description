@@ -1,18 +1,15 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="shark-v1">
 
-  <xacro:include filename="$(find sensors_description)/urdf/hokuyo.xacro" />
-  <xacro:include filename="$(find sensors_description)/urdf/sick_lms1xx.xacro" />
-  <xacro:include filename="$(find sensors_description)/urdf/rgb_cam.xacro" />
-  <xacro:include filename="$(find sensors_description)/urdf/camera_turret.xacro" />
-  <xacro:include filename="$(find hector_models)/urdf/orbbec_astra2.xacro" />
-  <xacro:include filename="$(find hector_models)/gazebo/orbbec_astra2.gazebo.xacro" />
   <xacro:include filename="$(find shark_description)/urdf/shark.xacro" />
-  <xacro:include filename="$(find sensors_description)/urdf/realsense_camera.urdf.xacro" />
+  <xacro:include filename="$(find sensors_description)/urdf/hokuyo.xacro" />
+  <xacro:include filename="$(find sensors_description)/urdf/sick_lms1xx.urdf.xacro" />
+  <xacro:include filename="$(find sensors_description)/urdf/rgb_cam.xacro" />
+  <xacro:include filename="$(find sensors_description)/urdf/realsense_camera.xacro" />
   <xacro:include filename="$(find boris_head_description)/urdf/boris_head.urdf" />
-  <xacro:include filename="$(find boris_head_description)/urdf/control.urdf.xacro" />
+  <xacro:include filename="$(find interbotix_xsarm_descriptions)/urdf/wx200.urdf.xacro" />
 
-  <!-- <xacro:include filename="$(find boris_description)/ros2_control/shark_ros2_control.xacro" /> -->
+  <xacro:include filename="$(find shark_description)/ros2_control/shark_ros2_control.xacro" />
 
   <xacro:property name="base_width" value="0.336" />
   <xacro:property name="base_len" value="0.5" />
@@ -59,8 +56,7 @@
     </joint>
   </xacro:macro>
 
-
-  <xacro:sick_lms1xx robot_namespace="/lms1xx" />
+  <xacro:sick_lms_1xx name="sick" ros_topic="/scan" />
 
   <xacro:macro name="dorso" params="parent depth width height xyz rpy">
     <link name="dorso_link">
@@ -86,6 +82,7 @@
     </joint>
   </xacro:macro>
 
+    <!--32,5-->
   <xacro:macro name="arm_support" params="parent width height depth xyz rpy">
     <link name="arm_support_link">
       <xacro:box_inertia m="1" w="${width}" h="${height}" d="0.01" />
@@ -115,17 +112,17 @@
     <child link="sick_mount_link" />
   </joint>
 
-  <!-- <joint name="dorso_head" type="fixed">
+  <joint name="dorso_head" type="fixed">
     <parent link="dorso_link" />
     <child link="head_root" />
     <origin xyz="0 0 ${dorso_height + 0.04}" rpy="0 0 0" />
-  </joint> -->
+  </joint>
 
-  <!-- <joint name="arm_to_robot" type="fixed">
+  <joint name="arm_to_robot" type="fixed">
     <origin xyz="0.1 0 ${arm_support_height/2}" rpy="0 0 0"/>
     <parent link="arm_support_link"/>
     <child link="wx200/base_link"/>
-  </joint> -->
+  </joint>
 
     <xacro:macro name="imu" params="parent xyz rpy">
     <link name="imu_link"/>
@@ -137,20 +134,6 @@
     </xacro:macro>
 
   <xacro:realsense_camera name="camera" parent="dorso_link" xyz="${dorso_len/2 + 0.05} 0 ${dorso_height + 0.053}" rpy="0 0 0"/>
-  <xacro:realsense_camera name="camera" parent="dorso_link">
-    <origin xyz="${dorso_len/2 + 0.05} 0 ${dorso_height + 0.053}" rpy="0 0 ${3.14/8}" />
-  </xacro:realsense_camera>
-  <xacro:realsense_gazebo />
-  <xacro:add_optical_frame name="camera_link" />
-  <xacro:camera_turret parent="dorso_link" name="camera_turret">
-    <origin xyz="${dorso_len/2 + 0.05} 0 ${dorso_height + 0.053}" rpy="0 0 ${3.14/8}" />
-  </xacro:camera_turret>
-  <xacro:orbbec_astra2 name="top_camera">
-    <parent link="camera_turret_tilt_link"/>
-    <origin rpy="0 0 -${M_PI/6}" xyz="0.06705 0 -0.00425"/>
-  </xacro:orbbec_astra2>
-  <xacro:orbbec_astra2_gazebo name="top_camera" semantic_segmentation="false"/>
-  <xacro:orbbec_astra2_gazebo name="top_camera"/>
 
   <xacro:dorso parent="base_link" depth="${dorso_len}" width="${dorso_width}" height="${dorso_height}" xyz="${-base_len/2 + (dorso_len/2)} 0 ${base_height/2}" rpy="0 0 0"/>
   <xacro:arm_support parent="dorso_link" width="${arm_support_width}" height="${arm_support_height}" depth="${arm_support_len}" xyz="${dorso_len/2 + arm_support_len/2} 0 ${arm_z_position}" rpy="0 0 0"/>
@@ -161,14 +144,4 @@
   <!-- <xacro:rgb_cam parent="wx200/gripper_bar_link" name="webcam" xyz="-0.078 0.0 0.05" rpy="0 0 0"/> -->
   <xacro:imu parent="base_link" xyz="${base_len/2 + 0.0625} 0 ${0.02 - base_height/2}" rpy="0 0 0"/>
   <xacro:shark_base/>  <!-- isso aq n existe mais, a gente reverteu as mudanças do luis que transformavam aquilo tudo em um macro q n ta aparecendo mais -->
-</robot>
-  <xacro:imu parent="base_link" xyz="-0.01 0 ${0.02 - base_height/2}" rpy="-0.014161 -0.0203861 0" />
-
-  <gazebo reference="dorso_link">
-    <material>Gazebo/DarkGray</material>
-  </gazebo>
-
-  <gazebo reference="arm_support_link">
-    <material>Gazebo/DarkGray</material>
-  </gazebo>
 </robot>
