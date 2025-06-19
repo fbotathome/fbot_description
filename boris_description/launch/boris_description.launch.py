@@ -62,8 +62,8 @@ def generate_launch_description():
             'robot_model': 'wx200',
             'use_rviz': 'false',
             'use_world_frame': 'false',
-            'use_sim': 'true',
-            'hardware_type': 'fake'
+            'use_sim': 'false',
+            'hardware_type': 'actual'
         }.items(),
     )
 
