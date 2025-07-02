@@ -47,11 +47,11 @@ def generate_launch_description():
         ]
     )
 
-    # robot_localization = IncludeLaunchDescription(
-    #     PythonLaunchDescriptionSource(
-    #         os.path.join(get_package_share_directory('freedom_navigation'), 'launch', 'robot_localization.launch.py')
-    #     )
-    # )
+    robot_localization = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(get_package_share_directory('fbot_navigation'), 'launch', 'robot_localization.launch.py')
+        )
+    )
 
     interbotix_arm_control = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -155,7 +155,7 @@ def generate_launch_description():
         delay_rviz_after_joint_state_broadcaster_spawner,
         delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,
         interbotix_arm_control,
-        # robot_localization,
+        robot_localization,
     ]
 
     return LaunchDescription(declared_arguments + nodes)
