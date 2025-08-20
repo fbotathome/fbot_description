@@ -142,6 +142,6 @@
   <!-- <xacro:imu parent="base_link" xyz="-0.01 0 ${0.02 - base_height/2}" rpy="-0.014161 -0.0203861 0" /> -->
   <!-- <xacro:boris_arm parent="arm_support_link" xyz="0.1 0 ${arm_support_height/2}" rpy="0 0 0"/> -->
   <!-- <xacro:rgb_cam parent="wx200/gripper_bar_link" name="webcam" xyz="-0.078 0.0 0.05" rpy="0 0 0"/> -->
-  <xacro:imu parent="base_link" xyz="${base_len/2 + 0.0625} 0 ${0.02 - base_height/2}" rpy="0 0 0"/>
+  <xacro:imu parent="base_link" xyz="0 0.06 ${base_height/2 - 0.05}" rpy="3.1415 0 ${-3.1415 / 2}"/>
   <xacro:shark_base/>  <!-- isso aq n existe mais, a gente reverteu as mudanças do luis que transformavam aquilo tudo em um macro q n ta aparecendo mais -->
 </robot>

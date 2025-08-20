@@ -47,11 +47,26 @@ def generate_launch_description():
         ]
     )
 
-    # robot_localization = IncludeLaunchDescription(
-    #     PythonLaunchDescriptionSource(
-    #         os.path.join(get_package_share_directory('freedom_navigation'), 'launch', 'robot_localization.launch.py')
-    #     )
-    # )
+    robot_localization = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(get_package_share_directory('fbot_navigation'), 'launch', 'robot_localization.launch.py')
+        )
+    )
+
+    interbotix_arm_control = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(
+                get_package_share_directory("interbotix_xsarm_control"), 'launch', 'xsarm_control.launch.py')
+        ),
+        launch_arguments={
+            'robot_model': 'wx200',
+            'use_rviz': 'false',
+            'use_world_frame': 'false',
+            'use_sim': 'false',
+            'hardware_type': 'actual'
+        }.items(),
+    )
+
 
     rviz_config_file = PathJoinSubstitution(
         [FindPackageShare("boris_description"), "rviz", "boris.rviz"]
@@ -65,6 +80,7 @@ def generate_launch_description():
         remappings=[
             ("/hoverboard_base_controller/cmd_vel_unstamped", "/cmd_vel"),
             ("/hoverboard_base_controller/odom", "/odom"),
+            ("~/robot_description", "/robot_description"),
         ],
     )
 
@@ -74,6 +90,7 @@ def generate_launch_description():
         output="both",
         parameters=[robot_description],
     )
+
     joint_state_publisher_node = Node(
         package="joint_state_publisher",
         executable="joint_state_publisher",
@@ -83,6 +100,15 @@ def generate_launch_description():
             'source_list': ['/boris_head/joint_states'],
         }],
     )
+
+    static_tf_arm_to_arm_support_joint = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        name='static_tf_arm_to_arm_support_joint',
+        arguments=['0.1', '0', '0.0235', '0', '0', '0', 'arm_support_link', 'wx200/base_link'],
+        output='screen'
+    )
+
     rviz_node = Node(
        package="rviz2",
        executable="rviz2",
@@ -125,9 +151,11 @@ def generate_launch_description():
         robot_state_pub_node,
         joint_state_publisher_node,
         joint_state_broadcaster_spawner,
+        static_tf_arm_to_arm_support_joint,
         delay_rviz_after_joint_state_broadcaster_spawner,
         delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,
-        # robot_localization,
+        interbotix_arm_control,
+        robot_localization,
     ]
 
     return LaunchDescription(declared_arguments + nodes)
