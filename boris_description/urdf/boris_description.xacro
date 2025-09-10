@@ -28,7 +28,7 @@
   <xacro:property name="arm_support_width" value="0.336" />
   <xacro:property name="arm_support_len" value="0.325" />
   <xacro:property name="arm_support_height" value="0.047" />
-  <xacro:arg name="arm_z_position" default="0.34"/>
+  <xacro:arg name="arm_z_position" default="0.37"/>
   <xacro:property name="arm_z_position" value="$(arg arm_z_position)" />
 
   <xacro:macro name="box_inertia" params="m w h d">
