@@ -5,7 +5,7 @@
   <xacro:include filename="$(find sensors_description)/urdf/hokuyo.xacro" />
   <xacro:include filename="$(find sensors_description)/urdf/sick_lms1xx.urdf.xacro" />
   <xacro:include filename="$(find sensors_description)/urdf/rgb_cam.xacro" />
-  <xacro:include filename="$(find sensors_description)/urdf/realsense_camera.xacro" />
+  <xacro:include filename="$(find sensors_description)/urdf/femtobolt_camera.xacro" />
   <!-- <xacro:include filename="$(find boris_head_description)/urdf/boris_head.urdf" /> -->
   <!-- <xacro:include filename="$(find interbotix_xsarm_descriptions)/urdf/wx200.urdf.xacro" /> -->
 
@@ -133,7 +133,8 @@
     </joint>
     </xacro:macro>
 
-  <xacro:realsense_camera name="camera" parent="dorso_link" xyz="${dorso_len/2 + 0.05} 0 ${dorso_height + 0.053}" rpy="0 0 0"/>
+  <!-- TODO: re-measure dorso_link -> neck pan axis if the neck/camera moved -->
+  <xacro:femtobolt_camera name="camera" parent="dorso_link" xyz="${dorso_len/2 + 0.05} 0 ${dorso_height + 0.053}" rpy="0 0 0"/>
 
   <xacro:dorso parent="base_link" depth="${dorso_len}" width="${dorso_width}" height="${dorso_height}" xyz="${-base_len/2 + (dorso_len/2)} 0 ${base_height/2}" rpy="0 0 0"/>
   <xacro:arm_support parent="dorso_link" width="${arm_support_width}" height="${arm_support_height}" depth="${arm_support_len}" xyz="${dorso_len/2 + arm_support_len/2} 0 ${arm_z_position}" rpy="0 0 0"/>

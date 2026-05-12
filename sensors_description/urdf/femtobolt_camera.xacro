@@ -1,0 +1,166 @@
+<?xml version="1.0"?>
+
+<robot name="femtobolt_rgbd" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:property name="M_PI" value="3.1415926535897931"/>
+
+  <!--
+    Femto Bolt RGB-D camera mounted on the pan/tilt neck.
+    Mirrors the structure of realsense_camera.xacro:
+      - head_pan_link / head_tilt_link      : real neck joints (driven by fbot_head neck_controller)
+      - head_pan_link_static / head_tilt_link_static + *_static joints (fixed):
+          "gambiarra" so TF still resolves when the neck controller is not running
+      - camera_link / camera_link_static    : the camera body. The Orbbec driver
+          (orbbec_camera) publishes camera_link -> camera_color_optical_frame /
+          camera_depth_optical_frame / ... so we DO NOT define optical frames here.
+
+    >>> NUMBERS TO FILL IN AFTER MEASURING THE REAL ROBOT <<<
+      - macro args xyz/rpy   : dorso_link  -> neck pan axis (top of the torso column)
+      - femtobolt_mount_xyz  : head_tilt_link -> camera_link  (camera w.r.t. the tilt axis)
+      - femtobolt_mount_rpy  : fixed mounting tilt of the camera bracket (usually 0 0 0)
+      - femtobolt_size       : outer box of the Femto Bolt body (x=depth y=width z=height)
+  -->
+  <xacro:property name="femtobolt_mount_xyz" value="0.05 0 0.05"/>   <!-- TODO measure: head_tilt_link -> camera_link -->
+  <xacro:property name="femtobolt_mount_rpy" value="0 0 0"/>                 <!-- TODO measure: fixed bracket tilt -->
+  <xacro:property name="femtobolt_size"      value="0.026 0.0996 0.0395"/>   <!-- TODO measure: Femto Bolt body x y z -->
+
+  <xacro:macro name="femtobolt_camera" params="name parent xyz rpy">
+
+      <!-- ===== neck: pan ===== -->
+      <link name="head_pan_link_static">
+          <inertial>
+              <origin rpy="0 0 0" xyz="-1.35308431126191E-16 -2.97071395261028E-17 0.0220876265081744"/>
+              <mass value="0.0182769203076134"/>
+              <inertia ixx="1.32243845065555E-05" ixy="5.07660179129181E-13" ixz="1.067515220067E-20" iyy="7.13386116649085E-06" iyz="-1.32882457845217E-20" izz="7.83291781352837E-06"/>
+          </inertial>
+      </link>
+      <link name="head_pan_link">
+          <inertial>
+              <origin rpy="0 0 0" xyz="-1.35308431126191E-16 -2.97071395261028E-17 0.0220876265081744"/>
+              <mass value="0.0182769203076134"/>
+              <inertia ixx="1.32243845065555E-05" ixy="5.07660179129181E-13" ixz="1.067515220067E-20" iyy="7.13386116649085E-06" iyz="-1.32882457845217E-20" izz="7.83291781352837E-06"/>
+          </inertial>
+          <visual>
+              <origin rpy="0 0 0" xyz="0 0 0"/>
+              <geometry>
+                  <mesh filename="package://sensors_description/meshes/tilt_link.STL"/>
+              </geometry>
+              <material name="">
+                  <color rgba="0.250980392156863 0.250980392156863 0.250980392156863 1"/>
+              </material>
+          </visual>
+          <collision>
+              <origin rpy="0 0 0" xyz="0 0 0"/>
+              <geometry>
+                  <mesh filename="package://sensors_description/meshes/tilt_link.STL"/>
+              </geometry>
+          </collision>
+      </link>
+
+      <joint name="head_pan_joint_static" type="fixed">
+          <origin xyz="${xyz}" rpy="${rpy}"/>
+          <parent link="${parent}"/>
+          <child link="head_pan_link_static"/>
+          <axis xyz="0 0 1"/>
+          <limit effort="1" lower="-1.57" upper="1.57" velocity="1"/>
+      </joint>
+      <joint name="head_pan_joint" type="revolute">
+          <origin xyz="${xyz}" rpy="${rpy}"/>
+          <parent link="${parent}"/>
+          <child link="head_pan_link"/>
+          <axis xyz="0 0 1"/>
+          <limit effort="1" lower="-1.57" upper="1.57" velocity="1"/>
+      </joint>
+
+      <!-- ===== neck: tilt ===== -->
+      <link name="head_tilt_link_static">
+          <inertial>
+              <origin rpy="0 0 0" xyz="0.0168744200088311 -0.000442984145897884 -0.00405256422002387"/>
+              <mass value="0.0547677687275323"/>
+              <inertia ixx="1.07071738005716E-05" ixy="-1.46854788384565E-07" ixz="5.59529059364376E-08" iyy="1.77011620295824E-05" iyz="1.27587154712834E-09" izz="2.01583693170578E-05"/>
+          </inertial>
+      </link>
+      <link name="head_tilt_link">
+          <inertial>
+              <origin rpy="0 0 0" xyz="0.0168744200088311 -0.000442984145897884 -0.00405256422002387"/>
+              <mass value="0.0547677687275323"/>
+              <inertia ixx="1.07071738005716E-05" ixy="-1.46854788384565E-07" ixz="5.59529059364376E-08" iyy="1.77011620295824E-05" iyz="1.27587154712834E-09" izz="2.01583693170578E-05"/>
+          </inertial>
+          <visual>
+              <origin rpy="0 0 0" xyz="0 0 0"/>
+              <geometry>
+                  <mesh filename="package://sensors_description/meshes/roll_link.STL"/>
+              </geometry>
+              <material name="">
+                  <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
+              </material>
+          </visual>
+          <collision>
+              <origin rpy="0 0 0" xyz="0 0 0"/>
+              <geometry>
+                  <mesh filename="package://sensors_description/meshes/roll_link.STL"/>
+              </geometry>
+          </collision>
+      </link>
+
+      <joint name="head_tilt_joint_static" type="fixed">
+          <origin rpy="0 0 0" xyz="0 0 0.05"/>
+          <parent link="head_pan_link_static"/>
+          <child link="head_tilt_link_static"/>
+          <axis xyz="0 1 0"/>
+          <limit effort="1" lower="-1.57" upper="1.57" velocity="1"/>
+      </joint>
+      <joint name="head_tilt_joint" type="revolute">
+          <origin rpy="0 0 0" xyz="0 0 0.05"/>
+          <parent link="head_pan_link"/>
+          <child link="head_tilt_link"/>
+          <axis xyz="0 1 0"/>
+          <limit effort="1" lower="-1.57" upper="1.57" velocity="1"/>
+      </joint>
+
+      <!-- ===== Femto Bolt body ===== -->
+      <link name="camera_link_static">
+        <inertial>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <mass value="0.1"/>
+            <inertia ixx="1e-4" ixy="0" ixz="0" iyy="1e-4" iyz="0" izz="1e-4"/>
+        </inertial>
+      </link>
+      <link name="camera_link">
+        <inertial>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <mass value="0.1"/>
+            <inertia ixx="1e-4" ixy="0" ixz="0" iyy="1e-4" iyz="0" izz="1e-4"/>
+        </inertial>
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <box size="${femtobolt_size}"/>
+            </geometry>
+            <material name="">
+                <color rgba="0.1 0.1 0.1 1"/>
+            </material>
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <box size="${femtobolt_size}"/>
+            </geometry>
+        </collision>
+      </link>
+
+      <joint name="camera_joint_static" type="fixed">
+          <origin rpy="${femtobolt_mount_rpy}" xyz="${femtobolt_mount_xyz}"/>
+          <parent link="head_tilt_link_static"/>
+          <child link="camera_link_static"/>
+          <axis xyz="0 0 0"/>
+      </joint>
+      <joint name="camera_joint" type="fixed">
+          <origin rpy="${femtobolt_mount_rpy}" xyz="${femtobolt_mount_xyz}"/>
+          <parent link="head_tilt_link"/>
+          <child link="camera_link"/>
+          <axis xyz="0 0 0"/>
+      </joint>
+      <!-- Optical frames (camera_color_optical_frame, camera_depth_optical_frame, ...)
+           are published at runtime by the orbbec_camera driver from camera_link. -->
+  </xacro:macro>
+</robot>
