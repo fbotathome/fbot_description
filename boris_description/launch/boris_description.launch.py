@@ -154,7 +154,7 @@ def generate_launch_description():
         static_tf_arm_to_arm_support_joint,
         delay_rviz_after_joint_state_broadcaster_spawner,
         delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,
-        # interbotix_arm_control,
+        interbotix_arm_control,
         robot_localization,
     ]
 
