@@ -3,7 +3,7 @@ urg_node_back:
     angle_max: 1.2
     angle_min: -1.2
     ip_port: 10940
-    serial_port: "/dev/sensors/hokuyo_H1309411"
+    serial_port: "/dev/sensors/hokuyo_H1309421"
     serial_baud: 115200
     laser_frame_id: "hokuyo_back_link"
     calibrate_time: false
