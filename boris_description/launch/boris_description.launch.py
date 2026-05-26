@@ -53,21 +53,6 @@ def generate_launch_description():
         )
     )
 
-    interbotix_arm_control = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(
-                get_package_share_directory("interbotix_xsarm_control"), 'launch', 'xsarm_control.launch.py')
-        ),
-        launch_arguments={
-            'robot_model': 'wx200',
-            'use_rviz': 'false',
-            'use_world_frame': 'false',
-            'use_sim': 'false',
-            'hardware_type': 'actual'
-        }.items(),
-    )
-
-
     rviz_config_file = PathJoinSubstitution(
         [FindPackageShare("boris_description"), "rviz", "boris.rviz"]
     )
@@ -99,14 +84,6 @@ def generate_launch_description():
         parameters=[{
             'source_list': ['/boris_head/joint_states'],
         }],
-    )
-
-    static_tf_arm_to_arm_support_joint = Node(
-        package='tf2_ros',
-        executable='static_transform_publisher',
-        name='static_tf_arm_to_arm_support_joint',
-        arguments=['0.1', '0', '0.0235', '0', '0', '0', 'arm_support_link', 'wx200/base_link'],
-        output='screen'
     )
 
     rviz_node = Node(
@@ -151,10 +128,8 @@ def generate_launch_description():
         robot_state_pub_node,
         joint_state_publisher_node,
         joint_state_broadcaster_spawner,
-        static_tf_arm_to_arm_support_joint,
         delay_rviz_after_joint_state_broadcaster_spawner,
         delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,
-        interbotix_arm_control,
         robot_localization,
     ]
 

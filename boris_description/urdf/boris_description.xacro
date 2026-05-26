@@ -30,6 +30,7 @@
   <xacro:property name="arm_support_height" value="0.047" />
   <xacro:arg name="arm_z_position" default="0.34"/>
   <xacro:property name="arm_z_position" value="$(arg arm_z_position)" />
+  <xacro:arg name="use_arm" default="true"/>
 
   <xacro:macro name="box_inertia" params="m w h d">
     <inertial>
@@ -118,11 +119,20 @@
     <origin xyz="0 0 ${dorso_height + 0.04}" rpy="0 0 0" />
   </joint> -->
 
-  <!-- <joint name="arm_to_robot" type="fixed">
-    <origin xyz="0.1 0 ${arm_support_height/2}" rpy="0 0 0"/>
-    <parent link="arm_support_link"/>
-    <child link="wx200/base_link"/>
-  </joint> -->
+  <!-- wx200 arm attachment. The arm's own model/TF/hardware come from the Interbotix stack
+       (xsarm_moveit.launch.py), whose namespaced robot_state_publisher owns the wx200/* subtree.
+       Here we only declare the attach point + a real fixed joint, so the BORIS<->arm connection
+       lives in the URDF instead of a runtime static_transform_publisher. We deliberately do NOT
+       include wx200.urdf.xacro: doing so would double-publish wx200/* on the global /tf and drag
+       the interbotix <ros2_control> block into the BORIS base controller_manager. -->
+  <xacro:if value="$(arg use_arm)">
+    <link name="wx200/base_link"/>
+    <joint name="arm_to_robot" type="fixed">
+      <origin xyz="0.1 0 ${arm_support_height/2}" rpy="0 0 0"/>
+      <parent link="arm_support_link"/>
+      <child link="wx200/base_link"/>
+    </joint>
+  </xacro:if>
 
     <xacro:macro name="imu" params="parent xyz rpy">
     <link name="imu_link"/>
