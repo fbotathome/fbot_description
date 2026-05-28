@@ -26,7 +26,7 @@ def generate_launch_description():
     declared_arguments.append(
         DeclareLaunchArgument(
             "arm_z_position",
-            default_value="0.34",
+            default_value="0.315",
             description="Z position of the arm support in meters",
         )
     )
