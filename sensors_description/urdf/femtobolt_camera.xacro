@@ -19,7 +19,7 @@
       - femtobolt_mount_rpy  : fixed mounting tilt of the camera bracket (usually 0 0 0)
       - femtobolt_size       : outer box of the Femto Bolt body (x=depth y=width z=height)
   -->
-  <xacro:property name="femtobolt_mount_xyz" value="0.05 0 -0.05"/>   <!-- TODO measure: head_tilt_link -> camera_link -->
+  <xacro:property name="femtobolt_mount_xyz" value="0.05 0 -0.04"/>   <!-- TODO measure: head_tilt_link -> camera_link -->
   <xacro:property name="femtobolt_mount_rpy" value="0 0 0"/>          <!-- 180° roll: corrects the camera_color_optical_frame being rolled 180° about the viewing axis (Femto Bolt mounted/published inverted). Use "0 0 0" if not needed. -->
   <xacro:property name="femtobolt_size"      value="0.026 0.0996 0.0395"/>   <!-- TODO measure: Femto Bolt body x y z -->
 
@@ -103,14 +103,14 @@
       </link>
 
       <joint name="head_tilt_joint_static" type="fixed">
-          <origin rpy="0 0 0" xyz="0 0 0.05"/>
+          <origin rpy="0 0 0" xyz="0 0 0.057"/>
           <parent link="head_pan_link_static"/>
           <child link="head_tilt_link_static"/>
           <axis xyz="0 1 0"/>
           <limit effort="1" lower="-1.57" upper="1.57" velocity="1"/>
       </joint>
       <joint name="head_tilt_joint" type="revolute">
-          <origin rpy="0 0 0" xyz="0 0 0.05"/>
+          <origin rpy="0 0 0" xyz="0 0 0.057"/>
           <parent link="head_pan_link"/>
           <child link="head_tilt_link"/>
           <axis xyz="0 1 0"/>

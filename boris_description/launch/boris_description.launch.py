@@ -23,9 +23,17 @@ def generate_launch_description():
             description="Start RViz2 automatically with this launch file.",
         )
     )
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "arm_z_position",
+            default_value="0.34",
+            description="Z position of the arm support in meters",
+        )
+    )
 
     # Initialize Arguments
     use_rviz = LaunchConfiguration("use_rviz")
+    arm_z_position = LaunchConfiguration("arm_z_position")
 
     # Get URDF via xacro
     robot_description_content = Command(
@@ -35,6 +43,9 @@ def generate_launch_description():
             PathJoinSubstitution(
                 [FindPackageShare("boris_description"), "urdf", "boris_description.xacro"]
             ),
+            " ",
+            "arm_z_position:=",
+            arm_z_position,
         ]
     )
     robot_description = {"robot_description": ParameterValue(robot_description_content,value_type=str)}
