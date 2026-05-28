@@ -144,7 +144,7 @@
     </xacro:macro>
 
   <!-- TODO: re-measure dorso_link -> neck pan axis if the neck/camera moved -->
-  <xacro:femtobolt_camera name="camera" parent="dorso_link" xyz="${dorso_len/2 + 0.05} 0 ${dorso_height + 0.053}" rpy="0 0 0"/>
+  <xacro:femtobolt_camera name="camera" parent="dorso_link" xyz="${dorso_len/2 + 0.042} 0 ${dorso_height}" rpy="0 0 0"/>
 
   <xacro:dorso parent="base_link" depth="${dorso_len}" width="${dorso_width}" height="${dorso_height}" xyz="${-base_len/2 + (dorso_len/2)} 0 ${base_height/2}" rpy="0 0 0"/>
   <xacro:arm_support parent="dorso_link" width="${arm_support_width}" height="${arm_support_height}" depth="${arm_support_len}" xyz="${dorso_len/2 + arm_support_len/2} 0 ${arm_z_position}" rpy="0 0 0"/>
