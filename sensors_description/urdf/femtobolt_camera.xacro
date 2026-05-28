@@ -20,7 +20,7 @@
       - femtobolt_size       : outer box of the Femto Bolt body (x=depth y=width z=height)
   -->
   <xacro:property name="femtobolt_mount_xyz" value="0.05 0 -0.05"/>   <!-- TODO measure: head_tilt_link -> camera_link -->
-  <xacro:property name="femtobolt_mount_rpy" value="${M_PI} 0 0"/>          <!-- 180° roll: corrects the camera_color_optical_frame being rolled 180° about the viewing axis (Femto Bolt mounted/published inverted). Use "0 0 0" if not needed. -->
+  <xacro:property name="femtobolt_mount_rpy" value="0 0 0"/>          <!-- 180° roll: corrects the camera_color_optical_frame being rolled 180° about the viewing axis (Femto Bolt mounted/published inverted). Use "0 0 0" if not needed. -->
   <xacro:property name="femtobolt_size"      value="0.026 0.0996 0.0395"/>   <!-- TODO measure: Femto Bolt body x y z -->
 
   <xacro:macro name="femtobolt_camera" params="name parent xyz rpy">
@@ -118,14 +118,14 @@
       </joint>
 
       <!-- ===== Femto Bolt body ===== -->
-      <link name="camera_link_static">
+      <link name="femtobolt_link_static">
         <inertial>
             <origin rpy="0 0 0" xyz="0 0 0"/>
             <mass value="0.1"/>
             <inertia ixx="1e-4" ixy="0" ixz="0" iyy="1e-4" iyz="0" izz="1e-4"/>
         </inertial>
       </link>
-      <link name="camera_link">
+      <link name="femtobolt_link">
         <inertial>
             <origin rpy="0 0 0" xyz="0 0 0"/>
             <mass value="0.1"/>
@@ -148,16 +148,16 @@
         </collision>
       </link>
 
-      <joint name="camera_joint_static" type="fixed">
+      <joint name="femtobolt_joint_static" type="fixed">
           <origin rpy="${femtobolt_mount_rpy}" xyz="${femtobolt_mount_xyz}"/>
           <parent link="head_tilt_link_static"/>
-          <child link="camera_link_static"/>
+          <child link="femtobolt_link_static"/>
           <axis xyz="0 0 0"/>
       </joint>
-      <joint name="camera_joint" type="fixed">
+      <joint name="femtobolt_joint" type="fixed">
           <origin rpy="${femtobolt_mount_rpy}" xyz="${femtobolt_mount_xyz}"/>
           <parent link="head_tilt_link"/>
-          <child link="camera_link"/>
+          <child link="femtobolt_link"/>
           <axis xyz="0 0 0"/>
       </joint>
       <!-- Optical frames (camera_color_optical_frame, camera_depth_optical_frame, ...)
