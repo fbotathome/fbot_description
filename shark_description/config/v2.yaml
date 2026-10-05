@@ -1,0 +1,23 @@
+# Shark base geometry, version v2 (the NEW base).
+#
+# TODO(boris_v2): PLACEHOLDER. These are still the v1 numbers, copied so the
+# file loads. Measure the new base and replace every value below BEFORE using
+# base_version:=v2 on the robot, then calibrate odometry (README: "Calibrating
+# odometry"). Until then v2 behaves exactly like v1.
+
+base:
+  length: 0.5
+  width: 0.336
+  height: 0.231
+
+wheel:
+  radius: 0.0775
+  width: 0.06
+  separation: 0.41
+  x_offset: 0.0
+
+caster_height: 0.07
+
+driver:
+  device: /dev/ttySHARK
+  max_velocity: 1.0
