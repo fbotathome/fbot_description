@@ -110,8 +110,8 @@ TF tree:
 ```
 map --(AMCL / slam_toolbox)--> odom --(EKF)--> base_footprint -> base_link
   base_link -> left_wheel, right_wheel, hokuyo_ground_link, hokuyo_back_link, sick_mount_link, imu_link
-  base_link -> dorso_link -> neck_pan_link -> camera_mount_link -> camera_link        (moves with the neck)
-                          \-> neck_pan_link_static -> ... -> camera_link_static         (fixed reference)
+  base_link -> dorso_link -> head_pan_link -> head_tilt_link -> camera_link        (moves with the neck)
+                          \-> head_pan_link_static -> ... -> camera_link_static         (fixed reference)
                           \-> arm_mount_link -> world -> link_base -> ... (xArm)      (manipulator.launch.py)
 ```
 
