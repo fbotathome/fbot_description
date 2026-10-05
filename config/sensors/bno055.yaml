@@ -3,7 +3,7 @@
 # cannot transform the IMU data into base_footprint.
 #
 # The serial port is NOT set here: it comes from the imu_port argument of
-# fbot_bringup/sensors.launch.py (default /dev/ttyUSB2; prefer a udev symlink).
+# fbot_bringup/sensors.launch.py (default /dev/ttyIMU, a udev symlink).
 bno055:
   ros__parameters:
     ros_topic_prefix: "bno055/"
