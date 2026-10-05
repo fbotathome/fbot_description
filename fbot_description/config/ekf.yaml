@@ -1,0 +1,31 @@
+# robot_localization EKF for BORIS (node name: ekf_filter_node).
+# Single owner of the odom -> base_footprint transform (publish_tf: true);
+# the diff_drive_controller has enable_odom_tf: false (boris_controllers.yaml).
+#
+# Inputs: /odom (wheel odometry) and /bno055/imu (yaw, yaw rate, x accel).
+# Output: /odometry/filtered
+ekf_filter_node:
+    ros__parameters:
+        frequency: 30.0
+        two_d_mode: false
+        publish_acceleration: true
+        publish_tf: true
+
+        map_frame: map
+        odom_frame: odom
+        base_link_frame: base_footprint
+        world_frame: odom
+
+        odom0: /odom
+        odom0_config: [true,  true,  false,
+                       false, false, true,
+                       true,  false, false,
+                       false, false, true,
+                       false, false, false]
+
+        imu0: /bno055/imu
+        imu0_config: [false, false, false,
+                      false, false, true,
+                      false, false, false,
+                      false, false, true,
+                      true,  false, false]

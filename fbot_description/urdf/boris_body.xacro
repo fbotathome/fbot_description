@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<!--
+  BORIS body: everything that sits on top of the Shark base.
+  Requires shark_base.xacro to be included first (it defines base_len,
+  base_height, ... from config/<base_version>.yaml).
+
+  Frames: base_link -> dorso_link -> [arm_mount_link]
+          base_link -> hokuyo_ground_link, hokuyo_back_link, sick_mount_link, imu_link
+-->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:property name="dorso_width"  value="0.338"/>
+  <xacro:property name="dorso_len"    value="0.282"/>
+  <xacro:property name="dorso_height" value="0.765"/>
+
+  <xacro:property name="arm_mount_width"  value="0.336"/>
+  <xacro:property name="arm_mount_len"    value="0.325"/>
+  <xacro:property name="arm_mount_height" value="0.047"/>
+
+  <xacro:macro name="dorso" params="parent">
+    <link name="dorso_link">
+      <xacro:box_inertia m="1" w="${dorso_width}" h="${dorso_height}" d="0.01"/>
+      <visual>
+        <origin xyz="0 0 ${dorso_height/2}"/>
+        <material name="lightgray"/>
+        <geometry><box size="${dorso_len} ${dorso_width} ${dorso_height}"/></geometry>
+      </visual>
+      <collision>
+        <origin xyz="0 0 ${dorso_height/2}"/>
+        <geometry><box size="${dorso_len} ${dorso_width} ${dorso_height}"/></geometry>
+      </collision>
+    </link>
+    <joint name="dorso_joint" type="fixed">
+      <parent link="${parent}"/>
+      <child link="dorso_link"/>
+      <origin xyz="${-base_len/2 + dorso_len/2} 0 ${base_height/2}" rpy="0 0 0"/>
+    </joint>
+  </xacro:macro>
+
+  <!-- Plate where an arm can be mounted. Only instantiated with use_arm_mount:=true. -->
+  <xacro:macro name="arm_mount" params="parent z">
+    <link name="arm_mount_link">
+      <xacro:box_inertia m="1" w="${arm_mount_width}" h="${arm_mount_height}" d="0.01"/>
+      <visual>
+        <material name="lightgray"/>
+        <geometry><box size="${arm_mount_len} ${arm_mount_width} ${arm_mount_height}"/></geometry>
+      </visual>
+      <collision>
+        <geometry><box size="${arm_mount_len} ${arm_mount_width} ${arm_mount_height}"/></geometry>
+      </collision>
+    </link>
+    <joint name="arm_mount_joint" type="fixed">
+      <parent link="${parent}"/>
+      <child link="arm_mount_link"/>
+      <origin xyz="${dorso_len/2 + arm_mount_len/2} 0 ${z}" rpy="0 0 0"/>
+    </joint>
+  </xacro:macro>
+
+  <xacro:macro name="imu" params="parent xyz rpy">
+    <link name="imu_link"/>
+    <joint name="imu_joint" type="fixed">
+      <parent link="${parent}"/>
+      <child link="imu_link"/>
+      <origin xyz="${xyz}" rpy="${rpy}"/>
+    </joint>
+  </xacro:macro>
+
+</robot>

@@ -1,0 +1,6 @@
+# Robot footprint used by Nav2 costmaps (single source for fbot_bringup/navigation.launch.py,
+# which rewrites the `footprint` key of the Nav2 params file with this value).
+# Robot frame: base_footprint. Units: meters. The polygon is larger than the
+# base box because it includes the torso/arm overhang; re-draw it when the
+# body changes.
+footprint: "[[0.48, 0.0], [0.47, 0.05], [0.45, 0.11], [0.40, 0.19], [0.34, 0.23], [0.29, 0.26], [0.22, 0.26], [0.14, 0.26], [0.0, 0.26], [-0.14, 0.26], [-0.22, 0.26], [-0.34, 0.26], [-0.39, 0.23], [-0.45, 0.19], [-0.49, 0.11], [-0.51, 0.05], [-0.52, 0.0], [-0.51, -0.05], [-0.49, -0.11],  [-0.45, -0.19], [-0.39, -0.23], [-0.29, -0.26], [-0.22, -0.26], [-0.14, -0.26], [0.0, -0.27], [0.14, -0.27], [0.22, -0.27], [0.29, -0.26], [0.34, -0.23], [0.40, -0.19], [0.45, -0.11], [0.47, -0.05]]"
