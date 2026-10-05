@@ -37,7 +37,7 @@
     </joint>
   </xacro:macro>
 
-  <!-- Plate where an arm can be mounted. Only instantiated with use_arm_mount:=true. -->
+  <!-- Plate the arm is mounted on (manipulator.launch.py attaches the arm to arm_mount_link). -->
   <xacro:macro name="arm_mount" params="parent z">
     <link name="arm_mount_link">
       <xacro:box_inertia m="1" w="${arm_mount_width}" h="${arm_mount_height}" d="0.01"/>

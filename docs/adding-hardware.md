@@ -29,6 +29,14 @@ and the diff-drive controller all read this file. Then calibrate odometry (`cali
 
 ## The arm
 
-The arm is not part of the description. `robot.launch.py use_arm:=true` adds the empty mounting
-plate (`arm_mount_link`, height `arm_z_position`) and starts `fbot_bringup/launch/arm.launch.py`,
-which attaches the arm's own model with a static transform.
+The arm is not part of this description; it has its own model and MoveIt stack.
+`fbot_bringup/launch/manipulator.launch.py` (included by the task launches that manipulate)
+starts it and attaches it to BORIS with one static transform `arm_mount_link -> <arm root>`
+(`world` for the xArm6, `wx200/base_link` for the WidowX). The plate `arm_mount_link` is in the
+URDF by default (`use_arm_mount`), at height `arm_z_position` on the torso.
+
+- Arm pose on the plate: `mount_xyz` / `mount_rpy` arguments of `manipulator.launch.py`
+  (defaults in its `ARMS` table; the xArm pose is still a TODO).
+- Wrist camera: the RealSense on the xArm wrist needs a transform from the arm's end effector to
+  `realsense_link` (not set up yet; measure / hand-eye calibrate, then add it to
+  `manipulator.launch.py`).

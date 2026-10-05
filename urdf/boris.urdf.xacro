@@ -5,8 +5,8 @@
   xacro args:
     base_version   v1 | v2    Shark base geometry (config/base/<v>.yaml)         [default v1]
     use_neck       true|false neck + camera mount (urdf/neck/neck.xacro)         [default true]
-    use_arm_mount  true|false empty mounting plate for an arm (no arm model)           [default false]
-    arm_z_position <m>        height of the plate on the torso                         [default 0.34]
+    use_arm_mount  true|false mounting plate the arm is attached to (no arm model)     [default true]
+    arm_z_position <m>        height of the plate on the torso                         [default 0.315]
     use_sick       true|false Sick LMS1xx mount                                        [default true]
 
   Check it:  xacro boris.urdf.xacro base_version:=v1 | check_urdf /dev/stdin
@@ -15,8 +15,8 @@
 
   <xacro:arg name="base_version"   default="v1"/>
   <xacro:arg name="use_neck"       default="true"/>
-  <xacro:arg name="use_arm_mount"  default="false"/>
-  <xacro:arg name="arm_z_position" default="0.34"/>
+  <xacro:arg name="use_arm_mount"  default="true"/>
+  <xacro:arg name="arm_z_position" default="0.315"/>
   <xacro:arg name="use_sick"       default="true"/>
 
   <!-- Base (geometry from config/base/<base_version>.yaml) -->

@@ -18,8 +18,8 @@ def generate_launch_description():
     args = [
         DeclareLaunchArgument('base_version', default_value='v1', description='Shark base version (fbot_description/config/base/<v>.yaml)'),
         DeclareLaunchArgument('use_neck', default_value='true', description='Include neck + camera mount'),
-        DeclareLaunchArgument('use_arm_mount', default_value='false', description='Include the (empty) arm mounting plate'),
-        DeclareLaunchArgument('arm_z_position', default_value='0.34', description='Arm plate height on the torso [m]'),
+        DeclareLaunchArgument('use_arm_mount', default_value='true', description='Include the arm mounting plate'),
+        DeclareLaunchArgument('arm_z_position', default_value='0.315', description='Arm plate height on the torso [m]'),
         DeclareLaunchArgument('use_rviz', default_value='true', description='Start RViz2'),
     ]
 

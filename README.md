@@ -36,7 +36,8 @@ It contains **no bringup logic**: the robot is started from [`fbot_bringup`](htt
 | start the robot body (base + lasers + IMU + EKF) | `ros2 launch fbot_bringup robot.launch.py` |
 | ...with navigation on a map | `ros2 launch fbot_bringup robot.launch.py use_navigation:=true map_file:=lab_2026_2.yaml` |
 | ...mapping (SLAM) | `ros2 launch fbot_bringup robot.launch.py use_navigation:=true use_slam:=true` |
-| ...with the neck / the arm | `... use_neck:=true` / `... use_arm:=true` |
+| ...with the neck | `... use_neck:=true` |
+| the arm (xArm6), next to the robot | `ros2 launch fbot_bringup manipulator.launch.py` (`xarm_fake:=true` without an arm, `arm_type:=wx200` for the WidowX) |
 | run a competition task | `ros2 launch fbot_behavior <task>.launch.py` (includes `robot.launch.py`) |
 | check the model after editing a xacro | `colcon test --packages-select fbot_description` |
 
@@ -73,10 +74,10 @@ fbot_description/
 | `base_version` | `v1` | which `config/base/<v>.yaml` describes the base |
 | `use_neck` | `true` | neck + camera mount (`camera_link`, `camera_link_static`) |
 | `use_sick` | `true` | Sick LMS mount (`sick_mount_link`, `sick_laser`) |
-| `use_arm_mount` | `false` | empty plate an arm can be attached to (`arm_mount_link`) |
-| `arm_z_position` | `0.34` | height of that plate on the torso [m] |
+| `use_arm_mount` | `true` | plate the arm is attached to (`arm_mount_link`) |
+| `arm_z_position` | `0.315` | height of that plate on the torso [m] |
 
-`fbot_bringup/robot.launch.py` sets them from its own flags (`use_arm` -> `use_arm_mount`).
+`fbot_bringup/robot.launch.py` passes them through (same names).
 
 ---
 
@@ -89,7 +90,9 @@ flowchart TD
     R --> L[localization.launch.py<br/>EKF]
     R -.use_navigation.-> N[navigation.launch.py<br/>Nav2 / SLAM]
     R -.use_neck.-> K[neck.launch.py]
-    R -.use_arm.-> A[arm.launch.py]
+    T[task launch] --> R
+    T -.uses the arm.-> M[manipulator.launch.py<br/>xArm MoveIt + fbot_manipulator]
+    M -. static TF arm_mount_link -> world .-> D
     B --- D[(fbot_description<br/>urdf + config)]
     S --- D
     L --- D
@@ -109,10 +112,10 @@ map --(AMCL / slam_toolbox)--> odom --(EKF)--> base_footprint -> base_link
   base_link -> left_wheel, right_wheel, hokuyo_ground_link, hokuyo_back_link, sick_mount_link, imu_link
   base_link -> dorso_link -> neck_pan_link -> camera_mount_link -> camera_link        (moves with the neck)
                           \-> neck_pan_link_static -> ... -> camera_link_static         (fixed reference)
-                          \-> arm_mount_link                                            (use_arm_mount)
+                          \-> arm_mount_link -> world -> link_base -> ... (xArm)      (manipulator.launch.py)
 ```
 
-Single owners: `/joint_states` comes only from `joint_state_publisher` (wheels from ros2_control + neck from `/boris_head/joint_states`); `odom -> base_footprint` only from the EKF.
+Owners: BORIS joints (wheels + neck) are published on `/joint_states` by `boris_joint_state_publisher` (merging `/base/joint_states` from ros2_control and `/boris_head/joint_states`); the arm stack publishes its own joints there. The base ros2_control runs in the `base` namespace (`/base/controller_manager`) so it can coexist with the arm's `/controller_manager`. `odom -> base_footprint` comes only from the EKF. BORIS uses `/robot_description`, the xArm `/xarm/robot_description`.
 
 ### Where is X defined?
 
