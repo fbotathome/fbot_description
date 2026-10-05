@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!--
+  ros2_control hardware description for the base (hoverboard_driver).
+  Included by urdf/base/base.xacro, which defines the `base_cfg` property
+  (config/base/<base_version>.yaml). Do not include this file on its own.
+-->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <ros2_control name="shark" type="system">
+    <hardware>
+      <plugin>hoverboard_driver/hoverboard_driver</plugin>
+      <param name="wheel_radius">${base_cfg['wheel']['radius']}</param>
+      <param name="max_velocity">${base_cfg['driver']['max_velocity']}</param>
+      <param name="device">${base_cfg['driver']['device']}</param>
+    </hardware>
+    <joint name="left_wheel_joint">
+      <command_interface name="velocity"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="right_wheel_joint">
+      <command_interface name="velocity"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+  </ros2_control>
+</robot>

@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>fbot_description</name>
+  <version>0.2.0</version>
+  <description>
+    BORIS robot description (data only): URDF/xacro of the base, body, neck and
+    sensors, meshes, and the controller / EKF / footprint / sensor configs. The
+    robot is STARTED from fbot_bringup/launch/robot.launch.py; this package only
+    provides the model and a hardware-free display launch.
+  </description>
+  <maintainer email="richardjcassis@furg.br">fbot</maintainer>
+  <license>TODO: License declaration</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <exec_depend>xacro</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>joint_state_publisher_gui</exec_depend>
+  <exec_depend>rviz2</exec_depend>
+
+  <test_depend>ament_cmake_pytest</test_depend>
+  <test_depend>python3-pytest</test_depend>
+  <test_depend>xacro</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
