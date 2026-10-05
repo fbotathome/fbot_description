@@ -1,6 +1,6 @@
 from launch import LaunchDescription
 import os
-from launch.actions import DeclareLaunchArgument, RegisterEventHandler
+from launch.actions import DeclareLaunchArgument, LogInfo, RegisterEventHandler
 from launch.conditions import IfCondition
 from launch.event_handlers import OnProcessExit
 from launch.substitutions import Command, FindExecutable, PathJoinSubstitution, LaunchConfiguration
@@ -146,7 +146,10 @@ def generate_launch_description():
         )
     )
 
+    deprecation = LogInfo(msg="[DEPRECATED] boris_description.launch.py: use fbot_bringup robot.launch.py (see fbot_description/README.md)")
+
     nodes = [
+        deprecation,
         control_node,
         robot_state_pub_node,
         joint_state_publisher_node,

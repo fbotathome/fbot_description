@@ -1,13 +1,13 @@
 # BNO055 IMU driver parameters (node name: bno055).
 # frame_id MUST equal the IMU link in the URDF (imu_link), otherwise the EKF
 # cannot transform the IMU data into base_footprint.
-# uart_port is overridden by fbot_bringup/sensors.launch.py (arg imu_port);
-# prefer a udev symlink (e.g. /dev/sensors/imu) over /dev/ttyUSBx.
+#
+# The serial port is NOT set here: it comes from the imu_port argument of
+# fbot_bringup/sensors.launch.py (default /dev/ttyUSB2; prefer a udev symlink).
 bno055:
   ros__parameters:
     ros_topic_prefix: "bno055/"
     connection_type: "uart"
-    uart_port: "/dev/ttyUSB2"
     uart_baudrate: 115200
     uart_timeout: 0.1
     data_query_frequency: 1000
