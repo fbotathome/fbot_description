@@ -43,4 +43,4 @@ neck:
     xyz: [0.0, -0.0, 0.063]
     mesh: package://fbot_description/meshes/v2/neck_tilt.stl
   camera:
-    xyz: [0.03985, 0.0, -0.019025]
+    xyz: [0.019025, -0.0, 0.03985]

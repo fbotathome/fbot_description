@@ -44,7 +44,7 @@ sizes) and keeps the hand-edited `driver` section of `v2.yaml`. Never commit the
 - Sick: the repo's LMS1xx macro is aligned with the CAD box (bottom and centre); its mesh is a
   slightly different LMS1xx model, so the scan-plane height is approximate (a few mm).
 - Neck: the export is posed. The neutral pose is rebuilt from the Femto housing frame: pan so
-  the camera width is lateral and the camera is in front of the pan axis, tilt so the optical
+  the camera width is lateral and the camera is in front of the pan axis, tilt so the camera up axis is vertical (Femto Bolt: 115 W x 40 H x 65 D, housing z = up), i.e. the optical
   axis is level. Joints are `head_pan_joint` / `head_tilt_joint` (same as v1).
 - Part names are listed at the top of the tool (`GROUPS`, `TORSO`, `SICK`, ...). If Onshape
   renames a part, update them there.

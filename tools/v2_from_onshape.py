@@ -292,8 +292,9 @@ def main():
     pan_p, _ = cad.joint_world(PAN_JOINT)
     tilt_pts = [cad.joint_world(j)[0] for j in TILT_JOINTS]
     tilt_p = np.mean(tilt_pts, axis=0)
-    housing = cad.world(FEMTO_HOUSING)[:3, :3]      # x = camera width axis, z = optical axis
-    width_axis, optical_axis = housing[:, 0], housing[:, 2]
+    # Femto Bolt housing frame: x = width (115 mm), z = UP (40 mm), optical axis = depth (65 mm)
+    housing = cad.world(FEMTO_HOUSING)[:3, :3]
+    width_axis, up_axis = housing[:, 0], housing[:, 2]
     # un-pan: width axis must become lateral (CAD x); keep the camera in front of the pan axis
     theta = -np.arctan2(width_axis[1], width_axis[0])
     femto_c = cad.mesh(femto_parts).vertices.mean(0)
@@ -304,17 +305,17 @@ def main():
     r_pan = rot([0, 0, 1], theta)
     tilt_p0 = pan_p + r_pan @ (tilt_p - pan_p)
     tilt_axis0 = r_pan @ width_axis
-    optical0 = r_pan @ optical_axis
-    if optical0[1] > 0:                              # must look forward (CAD -y)
-        optical0 = -optical0
-    # un-tilt: rotate about the (now lateral) tilt axis until the optical axis is level
-    level = np.array([optical0[0], optical0[1], 0.0])
-    level /= np.linalg.norm(level)
-    phi = np.arctan2(np.dot(np.cross(optical0, level), tilt_axis0), np.dot(optical0, level))
+    up0 = r_pan @ up_axis
+    if up0[2] < 0:
+        up0 = -up0
+    # un-tilt: rotate about the (now lateral) tilt axis until the camera up axis is vertical,
+    # i.e. the optical axis is level and points forward (camera in front of the pan axis)
+    z = np.array([0.0, 0.0, 1.0])
+    phi = np.arctan2(np.dot(np.cross(up0, z), tilt_axis0), np.dot(up0, z))
     r_tilt = rot(tilt_axis0, phi)
-    elevation = np.degrees(np.arcsin(optical0[2]))
+    pitch = np.degrees(np.arctan2(-up0[1], up0[2]))   # up axis leaning forward (CAD -y) = looking down
     report.append(f'neck: exported pan {np.degrees(-theta):+.1f} deg; Femto looked '
-                  f'{"up" if elevation > 0 else "down"} {abs(elevation):.1f} deg -> levelled')
+                  f'{"down" if pitch > 0 else "up"} {abs(pitch):.1f} deg -> levelled')
 
     def neutral(mesh, tilt):
         m = mesh.copy()
@@ -338,7 +339,7 @@ def main():
                  'mesh': save_mesh(neck_tilt, 'neck_tilt', FACES['neck_tilt'], tilt_r)[0]},
         'camera': {'xyz': r6(femto_center - tilt_r)},
     }
-    report.append(f'femto (neutral): centre {femto_center.round(4)} size {femto_size.round(4)} (expect ~0.04 x 0.115 x 0.065)')
+    report.append(f'femto (neutral): centre {femto_center.round(4)} size {femto_size.round(4)} (expect depth 0.065 x width 0.115 x height 0.040)')
 
     # ---- footprint: convex hull of the base, torso and sensors (floor projection)
     corners = []
