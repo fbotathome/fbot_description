@@ -26,6 +26,9 @@ hoverboard_base_controller:
     publish_rate: 100.0
     odom_frame_id: odom
     base_frame_id: base_footprint
+    # The controller runs in the `base` namespace; without this the frames
+    # become base/odom and base/base_footprint and the EKF drops /odom.
+    tf_frame_prefix_enable: false
     pose_covariance_diagonal : [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
     twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
 
