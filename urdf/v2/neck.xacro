@@ -1,0 +1,109 @@
+<?xml version="1.0"?>
+<!--
+  BORIS v2 neck: two Dynamixel XL430 (pan, tilt) carrying the Femto Bolt.
+  Poses and meshes from config/robot/v2.yaml (`neck`), neutral pose = Femto level
+  and facing forward.
+
+  Joint names are the camera pan/tilt joints fbot_head neck_controller publishes on
+  /boris_head/joint_states (same names as v1, urdf/v1/neck.xacro):
+    head_pan_joint (pan, about z)   head_tilt_joint (tilt, about y)
+
+  Frames: dorso_link -> head_pan_link -> head_tilt_link -> camera_link -> femtobolt_link
+  (no realsense_link here: on v2 the RealSense is on the xArm wrist)
+  `femtobolt_link` is the root frame of the Orbbec driver (camera_name:=femtobolt), so the
+  driver's optical frames hang off the neck. A fixed copy ends at camera_link_static.
+-->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="neck_v2" params="parent">
+    <xacro:property name="n" value="${base_cfg['neck']}"/>
+    <xacro:property name="pan" value="${n['pan']['xyz']}"/>
+    <xacro:property name="tilt" value="${n['tilt']['xyz']}"/>
+    <xacro:property name="cam" value="${n['camera']['xyz']}"/>
+
+    <!-- pan servo + mount plate, fixed on the torso -->
+    <link name="neck_base_link">
+      <visual>
+        <material name="darkgray"/>
+        <geometry><mesh filename="${n['base']['mesh']}"/></geometry>
+      </visual>
+    </link>
+    <joint name="neck_base_joint" type="fixed">
+      <parent link="${parent}"/>
+      <child link="neck_base_link"/>
+    </joint>
+
+    <link name="head_pan_link">
+      <xacro:box_inertia m="0.08" w="0.05" h="0.05" d="0.05"/>
+      <visual>
+        <material name="darkgray"/>
+        <geometry><mesh filename="${n['pan']['mesh']}"/></geometry>
+      </visual>
+      <collision>
+        <origin xyz="0 0 ${tilt[2] / 2}"/>
+        <geometry><box size="0.05 0.05 ${tilt[2]}"/></geometry>
+      </collision>
+    </link>
+    <joint name="head_pan_joint" type="revolute">
+      <parent link="${parent}"/>
+      <child link="head_pan_link"/>
+      <origin xyz="${pan[0]} ${pan[1]} ${pan[2]}" rpy="0 0 0"/>
+      <axis xyz="0 0 1"/>
+      <limit effort="1" lower="-1.57" upper="1.57" velocity="1"/>
+    </joint>
+
+    <link name="head_tilt_link">
+      <xacro:box_inertia m="0.3" w="0.115" h="0.065" d="0.04"/>
+      <visual>
+        <material name="darkgray"/>
+        <geometry><mesh filename="${n['tilt']['mesh']}"/></geometry>
+      </visual>
+      <collision>
+        <origin xyz="${cam[0]} ${cam[1]} ${cam[2]}"/>
+        <geometry><box size="0.04 0.115 0.065"/></geometry>
+      </collision>
+    </link>
+    <joint name="head_tilt_joint" type="revolute">
+      <parent link="head_pan_link"/>
+      <child link="head_tilt_link"/>
+      <origin xyz="${tilt[0]} ${tilt[1]} ${tilt[2]}" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <limit effort="1" lower="-1.57" upper="1.57" velocity="1"/>
+    </joint>
+
+    <link name="camera_link"/>
+    <joint name="camera_joint" type="fixed">
+      <parent link="head_tilt_link"/>
+      <child link="camera_link"/>
+      <origin xyz="${cam[0]} ${cam[1]} ${cam[2]}" rpy="0 0 0"/>
+    </joint>
+
+    <!-- Orbbec driver root frame (TODO: offset from the housing centre, identity for now) -->
+    <link name="femtobolt_link"/>
+    <joint name="femtobolt_joint" type="fixed">
+      <parent link="camera_link"/>
+      <child link="femtobolt_link"/>
+    </joint>
+
+    <!-- fixed reference chain (does not follow the neck) -->
+    <link name="head_pan_link_static"/>
+    <link name="head_tilt_link_static"/>
+    <link name="camera_link_static"/>
+    <joint name="head_pan_joint_static" type="fixed">
+      <parent link="${parent}"/>
+      <child link="head_pan_link_static"/>
+      <origin xyz="${pan[0]} ${pan[1]} ${pan[2]}" rpy="0 0 0"/>
+    </joint>
+    <joint name="head_tilt_joint_static" type="fixed">
+      <parent link="head_pan_link_static"/>
+      <child link="head_tilt_link_static"/>
+      <origin xyz="${tilt[0]} ${tilt[1]} ${tilt[2]}" rpy="0 0 0"/>
+    </joint>
+    <joint name="camera_joint_static" type="fixed">
+      <parent link="head_tilt_link_static"/>
+      <child link="camera_link_static"/>
+      <origin xyz="${cam[0]} ${cam[1]} ${cam[2]}" rpy="0 0 0"/>
+    </joint>
+  </xacro:macro>
+
+</robot>

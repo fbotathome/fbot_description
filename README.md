@@ -22,7 +22,7 @@
 
 It contains **no bringup logic**: the robot is started from [`fbot_bringup`](https://github.com/fbotathome/fbot_bringup) with `robot.launch.py`.
 
-**Glossary:** *BORIS* is the robot. *Shark* is its hoverboard differential-drive base (`base_version` = which Shark). The *neck* carries the camera.
+**Glossary:** *BORIS* is the robot. *Shark* is its hoverboard differential-drive base. `robot_version` (`v1`, `v2`) selects which BORIS: v2 is the new robot (new base and wheels, torso, xArm on the base, XL430 neck with the Femto Bolt). The *neck* carries the camera.
 
 ---
 
@@ -31,7 +31,7 @@ It contains **no bringup logic**: the robot is started from [`fbot_bringup`](htt
 | I want to... | Command |
 |---|---|
 | view the model (no hardware) | `ros2 launch fbot_description display.launch.py` |
-| ...the new base, without the neck | `ros2 launch fbot_description display.launch.py base_version:=v2 use_neck:=false` |
+| ...BORIS v2 | `ros2 launch fbot_description display.launch.py robot_version:=v2` |
 | drive the base only (hoverboard test) | `ros2 launch fbot_bringup base.launch.py` |
 | start the robot body (base + lasers + IMU + EKF) | `ros2 launch fbot_bringup robot.launch.py` |
 | ...with navigation on a map | `ros2 launch fbot_bringup robot.launch.py use_navigation:=true map_file:=lab_2026_2.yaml` |
@@ -48,18 +48,19 @@ It contains **no bringup logic**: the robot is started from [`fbot_bringup`](htt
 ```
 fbot_description/
 ├── urdf/
-│   ├── boris.urdf.xacro        the robot (start here)
-│   ├── body.xacro              torso, arm mounting plate, IMU frame
+│   ├── boris.urdf.xacro        the robot (start here): base + urdf/<robot_version>/robot.xacro
 │   ├── base/                   Shark base: base.xacro (macro fbot_base), base_ros2_control.xacro, materials.xacro
-│   ├── neck/neck.xacro         neck + camera mount (joints driven by fbot_head neck_controller)
-│   └── sensors/                hokuyo.xacro, sick_lms1xx.xacro
+│   ├── v1/                     robot.xacro, body.xacro, neck.xacro (v1 poses hardcoded)
+│   ├── v2/                     robot.xacro, neck.xacro (every pose read from config/robot/v2.yaml)
+│   └── sensors/                hokuyo.xacro, sick_lms1xx.xacro (shared)
 ├── config/
-│   ├── base/v1.yaml, v2.yaml   base geometry: wheel radius/separation, size, driver port   <- ONLY place
+│   ├── robot/v1.yaml, v2.yaml  robot geometry: wheels, base, driver port, Nav2 footprint (+ v2: all poses)  <- ONLY place
 │   ├── boris_controllers.yaml  diff_drive_controller (limits, rates)
 │   ├── ekf.yaml                robot_localization (owner of odom -> base_footprint)
-│   ├── footprint.yaml          Nav2 robot footprint
 │   └── sensors/                Hokuyo and BNO055 driver parameters
-├── meshes/{neck,sensors,face}/ face meshes are used by fbot_simulation only
+├── meshes/v2/                  decimated v2 meshes (generated)
+├── meshes/{neck,sensors,face}/ v1 meshes; face meshes are used by fbot_simulation only
+├── tools/v2_from_onshape.py    regenerates meshes/v2 + config/robot/v2.yaml from the Onshape export
 ├── launch/display.launch.py    model in RViz with joint sliders
 ├── rviz/boris.rviz
 ├── test/test_urdf.py           model checks for every flag combination
@@ -71,11 +72,11 @@ fbot_description/
 
 | Argument | Default | Meaning |
 |---|---|---|
-| `base_version` | `v1` | which `config/base/<v>.yaml` describes the base |
+| `robot_version` | `v1` | which BORIS: `config/robot/<v>.yaml` + `urdf/<v>/robot.xacro` |
 | `use_neck` | `true` | neck + camera mount (`camera_link`, `camera_link_static`) |
 | `use_sick` | `true` | Sick LMS mount (`sick_mount_link`, `sick_laser`) |
-| `use_arm_mount` | `true` | plate the arm is attached to (`arm_mount_link`) |
-| `arm_z_position` | `0.315` | height of that plate on the torso [m] |
+| `use_arm_mount` | `true` | frame the arm is attached to (`arm_mount_link`; v2: top of the base) |
+| `arm_z_position` | `0.315` | v1 only: height of the arm plate on the torso [m] |
 
 `fbot_bringup/robot.launch.py` passes them through (same names).
 
@@ -121,12 +122,12 @@ Owners: BORIS joints (wheels + neck) are published on `/joint_states` by `boris_
 
 | What | File |
 |---|---|
-| wheel radius, wheel separation, base size, driver serial port | `config/base/<base_version>.yaml` |
+| wheel radius, wheel separation, base size, driver serial port | `config/robot/<robot_version>.yaml` |
 | controller limits and rates | `config/boris_controllers.yaml` |
 | EKF | `config/ekf.yaml` |
-| Nav2 footprint | `config/footprint.yaml` |
+| Nav2 footprint | `footprint` in `config/robot/<robot_version>.yaml` |
 | laser / IMU driver parameters | `config/sensors/` (IMU port: `imu_port` arg of `fbot_bringup/sensors.launch.py`) |
-| sensor positions on the robot | `urdf/boris.urdf.xacro`, `urdf/body.xacro` |
+| sensor / neck / arm positions | v1: `urdf/v1/robot.xacro`, `urdf/v1/body.xacro`; v2: `config/robot/v2.yaml` (generated, see [BORIS v2 from Onshape](docs/v2_from_onshape.md)) |
 | Nav2 / SLAM params, maps | `fbot_navigation/param`, `fbot_navigation/maps` |
 
 More: [adding or changing hardware](docs/adding-hardware.md), [base versions and odometry calibration](docs/calibration.md).
@@ -138,8 +139,8 @@ More: [adding or changing hardware](docs/adding-hardware.md), [base versions and
 | Old | New |
 |---|---|
 | `boris_description` (launch + xacro) | `fbot_bringup/robot.launch.py`, `urdf/boris.urdf.xacro` |
-| `shark_description` | `urdf/base/`, `config/base/<v>.yaml` |
-| `boris_head_description` | `urdf/neck/neck.xacro`, `meshes/face/` |
+| `shark_description` | `urdf/base/`, `config/robot/<v>.yaml` |
+| `boris_head_description` | `urdf/v1/neck.xacro`, `meshes/face/` |
 | `sensors_description` | `urdf/sensors/`, `meshes/sensors/`, `config/sensors/`; drivers in `fbot_bringup/sensors.launch.py` |
 | `package://sensors_description/meshes/<m>` | `package://fbot_description/meshes/{neck,sensors}/<m>` |
 | `package://boris_head_description/meshes/dae/<m>` | `package://fbot_description/meshes/face/<m>` |
@@ -167,7 +168,7 @@ colcon test --packages-select fbot_description && colcon test-result --verbose
 
 1. Create a feature branch (`git checkout -b feat/amazing-feature`)
 2. Change the model under `urdf/`, `config/` or `meshes/` and run `colcon test --packages-select fbot_description`
-3. Never add dimensions to more than one file: base geometry lives in `config/base/<v>.yaml`
+3. Never add dimensions to more than one file: robot geometry lives in `config/robot/<v>.yaml`
 4. Commit your changes (`git commit -m 'Add amazing feature'`)
 5. Push to the branch (`git push origin feat/amazing-feature`)
 6. Open a Pull Request

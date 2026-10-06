@@ -2,7 +2,7 @@
 <robot name="sensor_hokuyo"
   xmlns:xacro="http://ros.org/wiki/xacro">
 
-  <xacro:macro name="sensor_hokuyo" params="parent xyz rpy name">
+  <xacro:macro name="sensor_hokuyo" params="parent xyz rpy name mesh:=package://fbot_description/meshes/sensors/hokuyo.dae">
     <link name="hokuyo_${name}_link">
       <!--collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -13,7 +13,7 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://fbot_description/meshes/sensors/hokuyo.dae"/>
+          <mesh filename="${mesh}"/>
         </geometry>
       </visual>
       <inertial>

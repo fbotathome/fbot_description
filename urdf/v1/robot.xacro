@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!--
+  BORIS v1: body, sensors and neck placement (dimensions hardcoded here and in
+  body.xacro; base geometry from config/robot/v1.yaml). Included by boris.urdf.xacro.
+-->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+
+  <!-- Body, sensors, neck -->
+  <xacro:include filename="$(find fbot_description)/urdf/v1/body.xacro"/>
+  <xacro:include filename="$(find fbot_description)/urdf/sensors/hokuyo.xacro"/>
+  <xacro:include filename="$(find fbot_description)/urdf/sensors/sick_lms1xx.xacro"/>
+  <xacro:include filename="$(find fbot_description)/urdf/v1/neck.xacro"/>
+
+  <xacro:dorso parent="base_link"/>
+
+  <xacro:if value="$(arg use_arm_mount)">
+    <xacro:arm_mount parent="dorso_link" z="$(arg arm_z_position)"/>
+  </xacro:if>
+
+  <xacro:if value="$(arg use_neck)">
+    <xacro:neck parent="dorso_link" xyz="${dorso_len/2 + 0.05} 0 ${dorso_height + 0.053}" rpy="0 0 0"/>
+  </xacro:if>
+
+  <!-- Lasers (frame names must match config/sensors/urg_*.yaml) -->
+  <xacro:sensor_hokuyo parent="base_link" name="ground"
+      xyz="${base_len/2 + 0.017 + 0.024} 0 ${0.02 - base_height/2}" rpy="${pi} 0 0"/>
+  <xacro:sensor_hokuyo parent="base_link" name="back"
+      xyz="${-base_len/2 - 0.017 - 0.024} 0 ${0.02 - base_height/2}" rpy="${pi} 0 ${pi}"/>
+
+  <xacro:if value="$(arg use_sick)">
+    <xacro:sick_lms_1xx name="sick" ros_topic="/scan"/>
+    <joint name="laser_joint" type="fixed">
+      <origin xyz="${base_len/2 + 0.017 + 0.05} 0 ${0.02 + base_height/2}" rpy="0 0 0"/>
+      <parent link="base_link"/>
+      <child link="sick_mount_link"/>
+    </joint>
+  </xacro:if>
+
+  <!-- IMU (frame_id of the bno055 driver must be imu_link) -->
+  <xacro:imu parent="base_link" xyz="0 0.06 ${base_height/2 - 0.05}" rpy="${pi} 0 ${-pi/2}"/>
+
+</robot>

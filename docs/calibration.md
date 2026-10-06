@@ -1,6 +1,6 @@
-# Base versions and odometry calibration
+# Robot versions and odometry calibration
 
-`base_version:=v1|v2` selects `config/base/<version>.yaml`. That file is the only source of the
+`robot_version:=v1|v2` selects `config/robot/<version>.yaml`. That file is the only source of the
 base geometry and is read by:
 
 - `urdf/base/base.xacro` (wheel positions and sizes),
@@ -10,8 +10,9 @@ base geometry and is read by:
 
 So the model, the driver and odometry cannot disagree.
 
-> `v2.yaml` is a placeholder with the v1 numbers. Measure the new base and edit it before using
-> `base_version:=v2`.
+> `v2.yaml` is generated from the Onshape CAD (`tools/v2_from_onshape.py`, see `v2_from_onshape.md`):
+> wheel radius 0.0984 and separation 0.344 are CAD values. Calibrate them on the robot; the
+> multipliers in `config/boris_controllers.yaml` survive re-running the tool.
 
 ## What the numbers do
 
@@ -33,7 +34,7 @@ With the robot on the floor and `ros2 launch fbot_bringup robot.launch.py` runni
    `radius_new = radius_old * real_distance / odom_distance`
 2. **Rotation.** Spin in place (`angular.z: 0.3`) exactly 360 degrees (use a floor mark).
    `separation_new = separation_old * odom_yaw / real_yaw`
-3. Write the values in `config/base/<version>.yaml`, rebuild, repeat until the error is a few %.
+3. Write the values in `config/robot/<version>.yaml`, rebuild, repeat until the error is a few %.
 
 Fine adjustments without touching the geometry: `wheel_separation_multiplier`,
 `left_wheel_radius_multiplier`, `right_wheel_radius_multiplier` in `config/boris_controllers.yaml`.

@@ -2,7 +2,7 @@
 <!--
   ros2_control hardware description for the base (hoverboard_driver).
   Included by urdf/base/base.xacro, which defines the `base_cfg` property
-  (config/base/<base_version>.yaml). Do not include this file on its own.
+  (config/robot/<robot_version>.yaml). Do not include this file on its own.
 -->
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
   <ros2_control name="shark" type="system">

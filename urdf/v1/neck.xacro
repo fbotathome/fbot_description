@@ -19,7 +19,7 @@
   target_frame, infinite_rotate_camera state).
 
   Usage:
-    <xacro:include filename="$(find fbot_description)/urdf/neck/neck.xacro"/>
+    <xacro:include filename="$(find fbot_description)/urdf/v1/neck.xacro"/>
     <xacro:neck parent="dorso_link" xyz="..." rpy="0 0 0"/>
 
   NOTE: the facial joints (jaw, eyes, eyelids, eyebrows) are driven by

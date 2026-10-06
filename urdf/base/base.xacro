@@ -1,14 +1,16 @@
 <?xml version="1.0"?>
 <!--
-  BORIS differential-drive base (the "Shark" hoverboard base), parametrized by base_version.
+  BORIS differential-drive base (the "Shark" hoverboard base), parametrized by robot_version.
 
-  Geometry comes ONLY from config/base/<base_version>.yaml. Do not hardcode
+  Geometry comes ONLY from config/robot/<robot_version>.yaml. Do not hardcode
   dimensions here. Usage:
 
     <xacro:include filename="$(find fbot_description)/urdf/base/base.xacro" />
     <xacro:fbot_base/>
 
-  and pass base_version:=v1|v2 to xacro (default v1).
+  and pass robot_version:=v1|v2 to xacro (default v1). Optional keys in the yaml:
+  base.center_x     base box centre ahead (+) / behind (-) the wheel axle   [default 0]
+  base.visual_mesh  mesh for the base visual (collision stays a box)      [default: box]
 
   Frames: base_footprint -> base_link -> left_wheel / right_wheel.
   Joints: left_wheel_joint / right_wheel_joint (same names as ros2_control
@@ -16,8 +18,8 @@
 -->
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <xacro:arg name="base_version" default="v1"/>
-  <xacro:property name="base_cfg" value="${xacro.load_yaml('$(find fbot_description)/config/base/$(arg base_version).yaml')}"/>
+  <xacro:arg name="robot_version" default="v1"/>
+  <xacro:property name="base_cfg" value="${xacro.load_yaml('$(find fbot_description)/config/robot/$(arg robot_version).yaml')}"/>
 
   <xacro:include filename="$(find fbot_description)/urdf/base/materials.xacro" />
 
@@ -29,6 +31,7 @@
   <xacro:property name="wheel_separation"  value="${base_cfg['wheel']['separation']}"/>
   <xacro:property name="wheel_x_offset"    value="${base_cfg['wheel']['x_offset']}"/>
   <xacro:property name="caster_height"     value="${base_cfg['caster_height']}"/>
+  <xacro:property name="base_center_x"     value="${base_cfg['base'].get('center_x', 0.0)}"/>
 
   <xacro:macro name="box_inertia" params="m w h d">
     <inertial>
@@ -63,13 +66,13 @@
       <xacro:cylinder_inertia m="10" r="${wheel_radius}" h="${wheel_width}"/>
     </link>
 
-    <!-- The wheel axle sits at z = wheel_radius above the ground:
-         base_link is at (base_height/2 + caster_height) above base_footprint. -->
+    <!-- The wheel axle sits at z = wheel_radius above the ground, under base_footprint:
+         base_link is (base_center_x, 0, base_height/2 + caster_height) from base_footprint. -->
     <joint name="${prefix}_wheel_joint" type="continuous">
       <axis xyz="0 1 0"/>
       <parent link="base_link"/>
       <child link="${prefix}_wheel"/>
-      <origin xyz="${wheel_x_offset} ${reflect * wheel_separation / 2} ${wheel_radius - caster_height - base_height/2}" rpy="0 0 0"/>
+      <origin xyz="${wheel_x_offset - base_center_x} ${reflect * wheel_separation / 2} ${wheel_radius - caster_height - base_height/2}" rpy="0 0 0"/>
     </joint>
   </xacro:macro>
 
@@ -81,7 +84,12 @@
       <visual>
         <material name="lightgray"/>
         <geometry>
-          <box size="${base_len} ${base_width} ${base_height}"/>
+          <xacro:if value="${'visual_mesh' in base_cfg['base']}">
+            <mesh filename="${base_cfg['base']['visual_mesh']}"/>
+          </xacro:if>
+          <xacro:unless value="${'visual_mesh' in base_cfg['base']}">
+            <box size="${base_len} ${base_width} ${base_height}"/>
+          </xacro:unless>
         </geometry>
       </visual>
       <collision>
@@ -92,7 +100,7 @@
     </link>
 
     <joint name="base_link_joint" type="fixed">
-      <origin xyz="0 0 ${base_height/2 + caster_height}" rpy="0 0 0"/>
+      <origin xyz="${base_center_x} 0 ${base_height/2 + caster_height}" rpy="0 0 0"/>
       <parent link="base_footprint"/>
       <child link="base_link"/>
     </joint>

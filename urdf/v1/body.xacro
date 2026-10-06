@@ -2,7 +2,7 @@
 <!--
   BORIS body: everything that sits on top of the Shark base.
   Requires urdf/base/base.xacro to be included first (it defines base_len,
-  base_height, ... from config/base/<base_version>.yaml).
+  base_height, ... from config/robot/<robot_version>.yaml).
 
   Frames: base_link -> dorso_link -> [arm_mount_link]
           base_link -> hokuyo_ground_link, hokuyo_back_link, sick_mount_link, imu_link

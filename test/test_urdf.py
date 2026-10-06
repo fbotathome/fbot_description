@@ -1,9 +1,11 @@
 """Model checks for boris.urdf.xacro (run with `colcon test --packages-select fbot_description`).
 
-For every combination of base_version / use_neck / use_sick / use_arm_mount it checks that:
+For every combination of robot_version / use_neck / use_sick / use_arm_mount it checks that:
   - xacro expands and the result is a single tree rooted at base_footprint
   - every ros2_control joint exists in the URDF (and vice versa for the wheels)
-  - the wheel joints sit at +-separation/2 and at height wheel radius, as in config/base/<v>.yaml
+  - the wheel joints sit at +-separation/2, under base_footprint and at height wheel radius,
+    as in config/robot/<v>.yaml
+  - the camera driver frame (femtobolt_link) hangs off the neck
   - every mesh referenced with package://fbot_description/ exists in the installed package
 """
 import itertools
@@ -19,22 +21,22 @@ from ament_index_python.packages import get_package_share_directory
 
 SHARE = get_package_share_directory('fbot_description')
 XACRO = os.path.join(SHARE, 'urdf', 'boris.urdf.xacro')
-VERSIONS = sorted(f[:-5] for f in os.listdir(os.path.join(SHARE, 'config', 'base')) if f.endswith('.yaml'))
+VERSIONS = sorted(f[:-5] for f in os.listdir(os.path.join(SHARE, 'config', 'robot')) if f.endswith('.yaml'))
 BOOL = ('true', 'false')
 CASES = list(itertools.product(VERSIONS, BOOL, BOOL, BOOL))
 
 
-def expand(base_version, use_neck, use_sick, use_arm_mount):
+def expand(robot_version, use_neck, use_sick, use_arm_mount):
     doc = xacro.process_file(XACRO, mappings={
-        'base_version': base_version, 'use_neck': use_neck,
+        'robot_version': robot_version, 'use_neck': use_neck,
         'use_sick': use_sick, 'use_arm_mount': use_arm_mount,
     })
     return doc.toxml()
 
 
-@pytest.mark.parametrize('base_version,use_neck,use_sick,use_arm_mount', CASES)
-def test_model(base_version, use_neck, use_sick, use_arm_mount, tmp_path):
-    urdf = expand(base_version, use_neck, use_sick, use_arm_mount)
+@pytest.mark.parametrize('robot_version,use_neck,use_sick,use_arm_mount', CASES)
+def test_model(robot_version, use_neck, use_sick, use_arm_mount, tmp_path):
+    urdf = expand(robot_version, use_neck, use_sick, use_arm_mount)
     root = ET.fromstring(urdf)
 
     links = {l.get('name') for l in root.findall('link')}
@@ -47,6 +49,7 @@ def test_model(base_version, use_neck, use_sick, use_arm_mount, tmp_path):
 
     # optional parts follow their flags
     assert ('camera_link' in links) == (use_neck == 'true')
+    assert ('femtobolt_link' in links) == (use_neck == 'true')
     assert ('sick_mount_link' in links) == (use_sick == 'true')
     assert ('arm_mount_link' in links) == (use_arm_mount == 'true')
 
@@ -55,14 +58,16 @@ def test_model(base_version, use_neck, use_sick, use_arm_mount, tmp_path):
     assert rc_joints == {'left_wheel_joint', 'right_wheel_joint'}
     assert rc_joints <= set(joints), 'ros2_control joints must exist in the URDF'
 
-    # wheel geometry == config/base/<version>.yaml
-    with open(os.path.join(SHARE, 'config', 'base', f'{base_version}.yaml')) as f:
+    # wheel geometry == config/robot/<version>.yaml
+    with open(os.path.join(SHARE, 'config', 'robot', f'{robot_version}.yaml')) as f:
         cfg = yaml.safe_load(f)
     for name, sign in (('left_wheel_joint', 1), ('right_wheel_joint', -1)):
         x, y, z = (float(v) for v in joints[name].find('origin').get('xyz').split())
         assert y == pytest.approx(sign * cfg['wheel']['separation'] / 2)
-    base_z = float(joints['base_link_joint'].find('origin').get('xyz').split()[2])
+    base_x, _, base_z = (float(v) for v in joints['base_link_joint'].find('origin').get('xyz').split())
     assert base_z + z == pytest.approx(cfg['wheel']['radius']), 'wheel axle must be at wheel radius height'
+    assert base_x + x == pytest.approx(cfg['wheel']['x_offset']), 'base_footprint must be over the wheel axle'
+    assert 'footprint' in cfg, 'config/robot/<v>.yaml must define the Nav2 footprint'
 
     # meshes exist
     for mesh in root.iter('mesh'):

@@ -17,14 +17,15 @@
 
 ## Moving a sensor or changing the body
 
-Edit the `xyz`/`rpy` in `urdf/boris.urdf.xacro` (sensors) or the dimensions in `urdf/body.xacro`
-(torso, arm plate). If the outline of the robot changes, redraw `config/footprint.yaml` (Nav2
+v2: change the CAD in Onshape, re-export and re-run `tools/v2_from_onshape.py` (see `v2_from_onshape.md`).
+v1: edit the `xyz`/`rpy` in `urdf/v1/robot.xacro` (sensors) or the dimensions in `urdf/v1/body.xacro`
+(torso, arm plate). If the outline of the robot changes, redraw `footprint` in `config/robot/<v>.yaml` (Nav2
 footprint, polygon in `base_footprint`, meters).
 
 ## A new base
 
-Add `config/base/<version>.yaml` (copy `v1.yaml`, keep the keys) and start with
-`base_version:=<version>`. Nothing else holds base dimensions: the URDF, the ros2_control block
+Add `config/robot/<version>.yaml` and `urdf/<version>/robot.xacro` (copy v2, which reads every pose
+from the yaml) and start with `robot_version:=<version>`. Nothing else holds base dimensions: the URDF, the ros2_control block
 and the diff-drive controller all read this file. Then calibrate odometry (`calibration.md`).
 
 ## The arm

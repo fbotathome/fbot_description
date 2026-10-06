@@ -1,7 +1,7 @@
 # ros2_control controllers for the BORIS base (hoverboard + diff_drive_controller).
 #
 # wheel_radius and wheel_separation are NOT set here on purpose: fbot_bringup/
-# launch/base.launch.py injects them from fbot_description/config/base/<base_version>.yaml
+# launch/base.launch.py injects them from fbot_description/config/robot/<robot_version>.yaml
 # so the geometry is defined only once. If you start the controller manually,
 # you must provide them yourself.
 controller_manager:
