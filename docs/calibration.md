@@ -26,7 +26,7 @@ The EKF fuses IMU yaw, which hides rotation errors; nothing hides distance error
 
 ## Calibration
 
-With the robot on the floor and `ros2 launch fbot_bringup robot.launch.py` running:
+With the robot on the floor and `ros2 launch fbot_bringup boris.launch.py` running:
 
 1. **Distance.** Mark 2 m on the floor. Drive straight at 0.2 m/s
    (`ros2 topic pub -r 10 /cmd_vel geometry_msgs/msg/Twist "{linear: {x: 0.2}}"`) and stop at

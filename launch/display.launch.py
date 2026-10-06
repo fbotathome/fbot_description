@@ -3,7 +3,7 @@
   ros2 launch fbot_description display.launch.py
   ros2 launch fbot_description display.launch.py robot_version:=v1 use_neck:=false
 
-The robot itself is started from fbot_bringup/launch/robot.launch.py.
+The robot itself is started from fbot_bringup/launch/boris.launch.py.
 """
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument

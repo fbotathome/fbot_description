@@ -146,7 +146,7 @@ def generate_launch_description():
         )
     )
 
-    deprecation = LogInfo(msg="[DEPRECATED] boris_description.launch.py: use fbot_bringup robot.launch.py (see fbot_description/README.md)")
+    deprecation = LogInfo(msg="[DEPRECATED] boris_description.launch.py: use fbot_bringup boris.launch.py (see fbot_description/README.md)")
 
     nodes = [
         deprecation,

@@ -6,7 +6,7 @@
   <description>
     BORIS robot description (data only): URDF/xacro of the base, body, neck and
     sensors, meshes, and the controller / EKF / footprint / sensor configs. The
-    robot is STARTED from fbot_bringup/launch/robot.launch.py; this package only
+    robot is STARTED from fbot_bringup/launch/boris.launch.py; this package only
     provides the model and a hardware-free display launch.
   </description>
   <maintainer email="richardjcassis@furg.br">fbot</maintainer>

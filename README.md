@@ -20,7 +20,7 @@
 
 `fbot_description` is the **model of BORIS**: URDF/xacro of the base, body, neck and sensors, the meshes, and the configuration that describes the hardware (base geometry, controllers, EKF, footprint, sensor drivers). It is a single ROS 2 package at the root of this repository.
 
-It contains **no bringup logic**: the robot is started from [`fbot_bringup`](https://github.com/fbotathome/fbot_bringup) with `robot.launch.py`.
+It contains **no bringup logic**: the robot is started from [`fbot_bringup`](https://github.com/fbotathome/fbot_bringup) with `boris.launch.py`.
 
 **Glossary:** *BORIS* is the robot. *Shark* is its hoverboard differential-drive base. `robot_version` (`v1`, `v2`, default `v2`) selects which BORIS: v2 is the new robot (new base and wheels, torso, xArm on the base, XL430 neck with the Femto Bolt). The *neck* carries the camera.
 
@@ -33,12 +33,12 @@ It contains **no bringup logic**: the robot is started from [`fbot_bringup`](htt
 | view the model (no hardware) | `ros2 launch fbot_description display.launch.py` |
 | ...the old BORIS (v1) | `ros2 launch fbot_description display.launch.py robot_version:=v1` |
 | drive the base only (hoverboard test) | `ros2 launch fbot_bringup base.launch.py` |
-| start the robot body (base + lasers + IMU + EKF) | `ros2 launch fbot_bringup robot.launch.py` |
-| ...with navigation on a map | `ros2 launch fbot_bringup robot.launch.py use_navigation:=true map_file:=lab_2026_2.yaml` |
-| ...mapping (SLAM) | `ros2 launch fbot_bringup robot.launch.py use_navigation:=true use_slam:=true` |
+| start the robot body (base + lasers + IMU + EKF) | `ros2 launch fbot_bringup boris.launch.py` |
+| ...with navigation on a map | `ros2 launch fbot_bringup boris.launch.py use_navigation:=true map_file:=lab_2026_2.yaml` |
+| ...mapping (SLAM) | `ros2 launch fbot_bringup boris.launch.py use_navigation:=true use_slam:=true` |
 | ...with the neck | `... use_neck:=true` |
 | the arm (xArm6), next to the robot | `ros2 launch fbot_bringup manipulator.launch.py` (`xarm_fake:=true` without an arm, `arm_type:=wx200` for the WidowX) |
-| run a competition task | `ros2 launch fbot_behavior <task>.launch.py` (includes `robot.launch.py`) |
+| run a competition task | `ros2 launch fbot_behavior <task>.launch.py` (includes `boris.launch.py`) |
 | check the model after editing a xacro | `colcon test --packages-select fbot_description` |
 
 ---
@@ -78,7 +78,7 @@ fbot_description/
 | `use_arm_mount` | `true` | frame the arm is attached to (`arm_mount_link`; v2: top of the base) |
 | `arm_z_position` | `0.315` | v1 only: height of the arm plate on the torso [m] |
 
-`fbot_bringup/robot.launch.py` passes them through (same names).
+`fbot_bringup/boris.launch.py` passes them through (same names).
 
 ---
 
@@ -86,7 +86,7 @@ fbot_description/
 
 ```mermaid
 flowchart TD
-    R[fbot_bringup/robot.launch.py] --> B[base.launch.py<br/>robot_state_publisher + ros2_control<br/>+ diff_drive_controller]
+    R[fbot_bringup/boris.launch.py] --> B[base.launch.py<br/>robot_state_publisher + ros2_control<br/>+ diff_drive_controller]
     R --> S[sensors.launch.py<br/>2x Hokuyo + IMU]
     R --> L[localization.launch.py<br/>EKF]
     R -.use_navigation.-> N[navigation.launch.py<br/>Nav2 / SLAM]
@@ -138,7 +138,7 @@ More: [adding or changing hardware](docs/adding-hardware.md), [base versions and
 
 | Old | New |
 |---|---|
-| `boris_description` (launch + xacro) | `fbot_bringup/robot.launch.py`, `urdf/boris.urdf.xacro` |
+| `boris_description` (launch + xacro) | `fbot_bringup/boris.launch.py`, `urdf/boris.urdf.xacro` |
 | `shark_description` | `urdf/base/`, `config/robot/<v>.yaml` |
 | `boris_head_description` | `urdf/v1/neck.xacro`, `meshes/face/` |
 | `sensors_description` | `urdf/sensors/`, `meshes/sensors/`, `config/sensors/`; drivers in `fbot_bringup/sensors.launch.py` |

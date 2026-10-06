@@ -9,7 +9,7 @@
    the base box, `base_height/2 + caster_height` above the floor).
 3. **Driver.** Put the driver parameters in `config/sensors/<sensor>.yaml` and start the driver in
    `fbot_bringup/launch/sensors.launch.py` behind a `use_<sensor>` flag (add the flag to
-   `robot.launch.py` as well).
+   `boris.launch.py` as well).
 4. **Frame.** The driver's `frame_id` must be exactly the URDF link name, otherwise TF cannot
    place the data (this was the case for the IMU: `bno055` vs `imu_link`).
 5. Run `colcon test --packages-select fbot_description` and look at it with

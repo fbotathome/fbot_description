@@ -5,7 +5,7 @@ packages below another package, so nothing in here is built or installed.
 
 | Folder | Replaced by |
 |---|---|
-| `boris_description/` | `urdf/boris.urdf.xacro` + `fbot_bringup/launch/robot.launch.py` |
+| `boris_description/` | `urdf/boris.urdf.xacro` + `fbot_bringup/launch/boris.launch.py` |
 | `shark_description/` | `urdf/base/` + `config/base/<version>.yaml` |
 | `sensors_description/` | `urdf/sensors/`, `meshes/sensors/`, `config/sensors/`; driver launches -> `fbot_bringup/launch/sensors.launch.py` (Sick: `fbot_bringup/launch/sick.launch.py`) |
 | `logistic_description/` | not replaced (logistic robot variant, Velodyne) |
