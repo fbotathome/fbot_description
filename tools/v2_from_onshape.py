@@ -174,6 +174,35 @@ def convex_hull_2d(points):
     return lower[:-1] + upper[:-1]
 
 
+KEEP_FACES = 2000   # connected pieces this simple are kept untouched (e.g. the base hull, ~1.2k faces)
+
+
+def _reduce(piece, target):
+    """Decimate one connected piece; CAD pieces that stop decimating early (non-manifold
+    detail) are replaced by their convex hull, which is enough for a visual."""
+    out = piece.simplify_quadric_decimation(face_count=target, aggression=7)
+    if len(out.faces) > 1.5 * target:
+        out = piece.convex_hull
+        if len(out.faces) > target:
+            out = out.simplify_quadric_decimation(face_count=target, aggression=7)
+    return out
+
+
+def simplify(mesh, faces):
+    """Reduce `mesh` to about `faces` triangles PIECE BY PIECE: decimating the merged mesh
+    lets a few detailed parts (brackets, screws) eat the budget and collapse a simple
+    large part (the base hull) to nothing."""
+    if len(mesh.faces) <= faces:
+        return mesh
+    pieces = [p for p in mesh.split(only_watertight=False) if len(p.faces) >= 4]
+    simple = [p for p in pieces if len(p.faces) <= KEEP_FACES]
+    detailed = [p for p in pieces if len(p.faces) > KEEP_FACES]
+    budget = max(faces - sum(len(p.faces) for p in simple), 200 * len(detailed))
+    total = sum(len(p.faces) for p in detailed)
+    reduced = [_reduce(p, max(200, int(budget * len(p.faces) / total))) for p in detailed]
+    return trimesh.util.concatenate(simple + reduced)
+
+
 def save_mesh(mesh, name, faces, offset, rotation=None):
     """Express `mesh` in a frame at `offset` (robot axes, optionally rotated by `rotation`),
     decimate, write binary STL."""
@@ -184,15 +213,7 @@ def save_mesh(mesh, name, faces, offset, rotation=None):
         t[:3, :3] = np.asarray(rotation).T
         m.apply_transform(t)
     m.merge_vertices()
-    if len(m.faces) > faces:
-        m = m.simplify_quadric_decimation(face_count=faces, aggression=7)
-    if len(m.faces) > 1.5 * faces:
-        # CAD meshes made of many small non-manifold pieces stop decimating early:
-        # replace each connected piece by its convex hull (enough for a visual), then decimate
-        pieces = [c.convex_hull for c in m.split(only_watertight=False) if len(c.faces) >= 4]
-        m = trimesh.util.concatenate(pieces)
-        if len(m.faces) > faces:
-            m = m.simplify_quadric_decimation(face_count=faces, aggression=7)
+    m = simplify(m, faces)
     path = os.path.join(PKG, 'meshes', 'v2', f'{name}.stl')
     m.export(path)
     return MESH_URI + f'{name}.stl', len(m.faces), os.path.getsize(path)
