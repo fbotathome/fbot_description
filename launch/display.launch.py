@@ -1,7 +1,7 @@
 """View the BORIS model without any hardware (RViz + joint sliders).
 
   ros2 launch fbot_description display.launch.py
-  ros2 launch fbot_description display.launch.py robot_version:=v2 use_neck:=false
+  ros2 launch fbot_description display.launch.py robot_version:=v1 use_neck:=false
 
 The robot itself is started from fbot_bringup/launch/robot.launch.py.
 """
@@ -16,7 +16,7 @@ from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
     args = [
-        DeclareLaunchArgument('robot_version', default_value='v1', description='BORIS version (fbot_description/config/robot/<v>.yaml)'),
+        DeclareLaunchArgument('robot_version', default_value='v2', description='BORIS version (fbot_description/config/robot/<v>.yaml)'),
         DeclareLaunchArgument('use_neck', default_value='true', description='Include neck + camera mount'),
         DeclareLaunchArgument('use_arm_mount', default_value='true', description='Include the arm mounting plate'),
         DeclareLaunchArgument('arm_z_position', default_value='0.315', description='Arm plate height on the torso [m]'),

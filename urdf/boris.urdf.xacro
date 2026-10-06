@@ -3,7 +3,7 @@
   BORIS robot description.
 
   xacro args:
-    robot_version  v1 | v2    which BORIS (config/robot/<v>.yaml, urdf/<v>/robot.xacro) [default v1]
+    robot_version  v1 | v2    which BORIS (config/robot/<v>.yaml, urdf/<v>/robot.xacro) [default v2]
     use_neck       true|false neck + camera mount (urdf/<v>/neck.xacro)          [default true]
     use_arm_mount  true|false mounting plate the arm is attached to (no arm model)     [default true]
     arm_z_position <m>        v1: height of the plate on the torso                     [default 0.315]
@@ -13,7 +13,7 @@
 -->
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="boris">
 
-  <xacro:arg name="robot_version"  default="v1"/>
+  <xacro:arg name="robot_version"  default="v2"/>
   <xacro:arg name="use_neck"       default="true"/>
   <xacro:arg name="use_arm_mount"  default="true"/>
   <xacro:arg name="arm_z_position" default="0.315"/>

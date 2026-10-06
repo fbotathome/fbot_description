@@ -8,7 +8,7 @@
     <xacro:include filename="$(find fbot_description)/urdf/base/base.xacro" />
     <xacro:fbot_base/>
 
-  and pass robot_version:=v1|v2 to xacro (default v1). Optional keys in the yaml:
+  and pass robot_version:=v1|v2 to xacro (default v2). Optional keys in the yaml:
   base.center_x     base box centre ahead (+) / behind (-) the wheel axle   [default 0]
   base.visual_mesh  mesh for the base visual (collision stays a box)      [default: box]
 
@@ -18,7 +18,7 @@
 -->
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <xacro:arg name="robot_version" default="v1"/>
+  <xacro:arg name="robot_version" default="v2"/>
   <xacro:property name="base_cfg" value="${xacro.load_yaml('$(find fbot_description)/config/robot/$(arg robot_version).yaml')}"/>
 
   <xacro:include filename="$(find fbot_description)/urdf/base/materials.xacro" />

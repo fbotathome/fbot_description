@@ -22,7 +22,7 @@
 
 It contains **no bringup logic**: the robot is started from [`fbot_bringup`](https://github.com/fbotathome/fbot_bringup) with `robot.launch.py`.
 
-**Glossary:** *BORIS* is the robot. *Shark* is its hoverboard differential-drive base. `robot_version` (`v1`, `v2`) selects which BORIS: v2 is the new robot (new base and wheels, torso, xArm on the base, XL430 neck with the Femto Bolt). The *neck* carries the camera.
+**Glossary:** *BORIS* is the robot. *Shark* is its hoverboard differential-drive base. `robot_version` (`v1`, `v2`, default `v2`) selects which BORIS: v2 is the new robot (new base and wheels, torso, xArm on the base, XL430 neck with the Femto Bolt). The *neck* carries the camera.
 
 ---
 
@@ -31,7 +31,7 @@ It contains **no bringup logic**: the robot is started from [`fbot_bringup`](htt
 | I want to... | Command |
 |---|---|
 | view the model (no hardware) | `ros2 launch fbot_description display.launch.py` |
-| ...BORIS v2 | `ros2 launch fbot_description display.launch.py robot_version:=v2` |
+| ...the old BORIS (v1) | `ros2 launch fbot_description display.launch.py robot_version:=v1` |
 | drive the base only (hoverboard test) | `ros2 launch fbot_bringup base.launch.py` |
 | start the robot body (base + lasers + IMU + EKF) | `ros2 launch fbot_bringup robot.launch.py` |
 | ...with navigation on a map | `ros2 launch fbot_bringup robot.launch.py use_navigation:=true map_file:=lab_2026_2.yaml` |
@@ -72,7 +72,7 @@ fbot_description/
 
 | Argument | Default | Meaning |
 |---|---|---|
-| `robot_version` | `v1` | which BORIS: `config/robot/<v>.yaml` + `urdf/<v>/robot.xacro` |
+| `robot_version` | `v2` | which BORIS: `config/robot/<v>.yaml` + `urdf/<v>/robot.xacro` |
 | `use_neck` | `true` | neck + camera mount (`camera_link`, `camera_link_static`) |
 | `use_sick` | `true` | Sick LMS mount (`sick_mount_link`, `sick_laser`) |
 | `use_arm_mount` | `true` | frame the arm is attached to (`arm_mount_link`; v2: top of the base) |
