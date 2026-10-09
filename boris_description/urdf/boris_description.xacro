@@ -7,7 +7,7 @@
   <xacro:include filename="$(find sensors_description)/urdf/rgb_cam.xacro" />
   <xacro:include filename="$(find sensors_description)/urdf/realsense_camera.xacro" />
   <!-- <xacro:include filename="$(find boris_head_description)/urdf/boris_head.urdf" /> -->
-  <!-- <xacro:include filename="$(find interbotix_xsarm_descriptions)/urdf/wx200.urdf.xacro" /> -->
+  <xacro:include filename="$(find interbotix_xsarm_descriptions)/urdf/wx200.urdf.xacro" />
 
   <!-- <xacro:include filename="$(find boris_description)/ros2_control/shark_ros2_control.xacro" /> -->
 
@@ -118,11 +118,11 @@
     <origin xyz="0 0 ${dorso_height + 0.04}" rpy="0 0 0" />
   </joint> -->
 
-  <!-- <joint name="arm_to_robot" type="fixed">
+  <joint name="arm_to_robot" type="fixed">
     <origin xyz="0.1 0 ${arm_support_height/2}" rpy="0 0 0"/>
     <parent link="arm_support_link"/>
     <child link="wx200/base_link"/>
-  </joint> -->
+  </joint>
 
     <xacro:macro name="imu" params="parent xyz rpy">
     <link name="imu_link"/>

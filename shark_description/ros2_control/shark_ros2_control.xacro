@@ -1,22 +1,106 @@
 <?xml version="1.0"?>
-<robot>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:arg name="use_sim" default="false"/>
+
   <ros2_control name="shark" type="system">
     <hardware>
-      <plugin>hoverboard_driver/hoverboard_driver</plugin>
-      <param name="wheel_radius">0.0775</param>
-      <param name="max_velocity">1.0</param>
-      <param name="device">/dev/ttySHARK</param>
+      <xacro:if value="$(arg use_sim)">
+        <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+      </xacro:if>
+      <xacro:unless value="$(arg use_sim)">
+        <plugin>hoverboard_driver/hoverboard_driver</plugin>
+        <param name="wheel_radius">0.0775</param>
+        <param name="max_velocity">1.0</param>
+        <param name="device">/dev/ttySHARK</param>
+      </xacro:unless>
     </hardware>
     <joint name="left_wheel_joint">
-      <command_interface name="velocity"/>
+      <command_interface name="velocity">
+        <xacro:if value="$(arg use_sim)">
+          <param name="min">-1</param>
+          <param name="max">1</param>
+        </xacro:if>
+      </command_interface>
       <state_interface name="position"/>
       <state_interface name="velocity"/>
     </joint>
     <joint name="right_wheel_joint">
-      <command_interface name="velocity"/>
+      <command_interface name="velocity">
+        <xacro:if value="$(arg use_sim)">
+          <param name="min">-1</param>
+          <param name="max">1</param>
+        </xacro:if>
+      </command_interface>
       <state_interface name="position"/>
       <state_interface name="velocity"/>
     </joint>
+    <xacro:if value="$(arg use_sim)">
+      <joint name="waist">
+        <command_interface name="position"/>
+        <state_interface name="position">
+          <param name="initial_value">0.0</param>
+        </state_interface>
+        <state_interface name="velocity"/>
+      </joint>
+      <joint name="shoulder">
+        <command_interface name="position"/>
+        <state_interface name="position">
+          <param name="initial_value">0.0</param>
+        </state_interface>
+        <state_interface name="velocity"/>
+      </joint>
+      <joint name="elbow">
+        <command_interface name="position"/>
+        <state_interface name="position">
+          <param name="initial_value">0.0</param>
+        </state_interface>
+        <state_interface name="velocity"/>
+      </joint>
+      <joint name="wrist_angle">
+        <command_interface name="position"/>
+        <state_interface name="position">
+          <param name="initial_value">0.0</param>
+        </state_interface>
+        <state_interface name="velocity"/>
+      </joint>
+      <joint name="wrist_rotate">
+        <command_interface name="position"/>
+        <state_interface name="position">
+          <param name="initial_value">0.0</param>
+        </state_interface>
+        <state_interface name="velocity"/>
+      </joint>
+      <joint name="gripper">
+        <command_interface name="position"/>
+        <state_interface name="position">
+          <param name="initial_value">0.0</param>
+        </state_interface>
+        <state_interface name="velocity"/>
+      </joint>
+      <joint name="left_finger">
+        <command_interface name="position"/>
+        <state_interface name="position">
+          <param name="initial_value">0.02</param>
+        </state_interface>
+        <state_interface name="velocity"/>
+      </joint>
+      <joint name="right_finger">
+        <command_interface name="position"/>
+        <state_interface name="position">
+          <param name="initial_value">-0.02</param>
+        </state_interface>
+        <state_interface name="velocity"/>
+      </joint>
+    </xacro:if>
   </ros2_control>
+
+  <xacro:if value="$(arg use_sim)">
+    <gazebo>
+      <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+        <parameters>$(find shark_description)/config/shark_controllers_sim.yaml</parameters>
+      </plugin>
+    </gazebo>
+  </xacro:if>
+
 </robot>
- 
