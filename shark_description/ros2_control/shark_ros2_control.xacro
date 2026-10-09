@@ -18,8 +18,8 @@
     <joint name="left_wheel_joint">
       <command_interface name="velocity">
         <xacro:if value="$(arg use_sim)">
-          <param name="min">-1</param>
-          <param name="max">1</param>
+          <param name="min">-15</param>
+          <param name="max">15</param>
         </xacro:if>
       </command_interface>
       <state_interface name="position"/>
@@ -28,8 +28,8 @@
     <joint name="right_wheel_joint">
       <command_interface name="velocity">
         <xacro:if value="$(arg use_sim)">
-          <param name="min">-1</param>
-          <param name="max">1</param>
+          <param name="min">-15</param>
+          <param name="max">15</param>
         </xacro:if>
       </command_interface>
       <state_interface name="position"/>
@@ -99,6 +99,11 @@
     <gazebo>
       <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
         <parameters>$(find shark_description)/config/shark_controllers_sim.yaml</parameters>
+        <ros>
+          <remapping>/hoverboard_base_controller/cmd_vel_unstamped:=/cmd_vel</remapping>
+          <remapping>/hoverboard_base_controller/odom:=/odom</remapping>
+          <remapping>/joint_states:=/gz/joint_states</remapping>
+        </ros>
       </plugin>
     </gazebo>
   </xacro:if>
