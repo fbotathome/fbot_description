@@ -64,7 +64,7 @@ fbot_description/
 ├── launch/display.launch.py    model in RViz with joint sliders
 ├── rviz/boris.rviz
 ├── test/test_urdf.py           model checks for every flag combination
-├── docs/                       adding hardware, calibration
+├── docs/                       adding hardware, calibration, USB devices
 └── legacy/                     old packages, NOT built (see legacy/README.md)
 ```
 
@@ -130,7 +130,7 @@ Owners: BORIS joints (wheels + neck) are published on `/joint_states` by `boris_
 | sensor / neck / arm positions | v1: `urdf/v1/robot.xacro`, `urdf/v1/body.xacro`; v2: `config/robot/v2.yaml` (generated, see [BORIS v2 from Onshape](docs/v2_from_onshape.md)) |
 | Nav2 / SLAM params, maps | `fbot_navigation/param`, `fbot_navigation/maps` |
 
-More: [adding or changing hardware](docs/adding-hardware.md), [base versions and odometry calibration](docs/calibration.md).
+More: [adding or changing hardware](docs/adding-hardware.md), [base versions and odometry calibration](docs/calibration.md), [USB devices and udev rules](docs/usb-devices.md).
 
 ---
 
