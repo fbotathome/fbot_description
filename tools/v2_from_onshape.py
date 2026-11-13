@@ -280,9 +280,14 @@ def main():
     sensors['sick'] = {'xyz': r6(mount - base_link), 'rpy': [0.0, 0.0, 0.0]}
     report.append(f'sick: CAD box {size_s.round(4)} vs macro mesh {size_ref.round(4)} (aligned by bottom + centre)')
 
-    # ---- IMU: not in the CAD -> same pose relative to base_link as v1 (TODO: measure)
-    sensors['imu'] = {'xyz': r6([0.0, 0.06, size[2] / 2 - 0.05]), 'rpy': r6([np.pi, 0.0, -np.pi / 2]),
-                      'todo': 'not in the CAD; v1 pose relative to base_link'}
+    # ---- IMU: not in the CAD -> measured on the robot (2026-11-13), BNO055 chip centre:
+    # 315 mm above the bottom of the profile box, 77 mm behind its front face, centred
+    # laterally (217 mm from the right side, box width 434 mm). Profile box in base_link:
+    # x +-0.252, y +-0.217, bottom z -0.1734 (the hoverboard shell is below it).
+    # Orientation: same mounting as v1 (yaw 180 deg ambiguous, see docs/v2_from_onshape.md).
+    sensors['imu'] = {'xyz': r6([0.252 - 0.077, 0.217 - 0.217, -0.1734 + 0.315]),
+                      'rpy': r6([np.pi, 0.0, -np.pi / 2]),
+                      'note': 'measured on the robot, not in the CAD; v1 orientation (yaw +-180 deg unverified)'}
 
     # ---- arm mount: bottom centre of the xArm base disc
     lo_a, _, c_a, _ = bbox(mesh_to_robot(cad.mesh([ARM_BASE]), origin))

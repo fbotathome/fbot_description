@@ -72,7 +72,7 @@
     </joint>
   </xacro:if>
 
-  <!-- IMU (not in the CAD yet: see `todo` in the yaml). bno055 frame_id must be imu_link -->
+  <!-- IMU (measured on the robot, not in the CAD: see `note` in the yaml). bno055 frame_id must be imu_link -->
   <xacro:property name="imu" value="${sensors['imu']}"/>
   <link name="imu_link"/>
   <joint name="imu_joint" type="fixed">

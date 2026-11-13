@@ -34,9 +34,9 @@ sensors:
     xyz: [0.329885, -0.000125, 0.202382]
     rpy: [0.0, 0.0, 0.0]
   imu:
-    xyz: [0.0, 0.06, 0.196544]
+    xyz: [0.175, 0.0, 0.1416]
     rpy: [3.141593, 0.0, -1.570796]
-    todo: not in the CAD; v1 pose relative to base_link
+    note: measured on the robot, not in the CAD; v1 orientation (yaw +-180 deg unverified)
 neck:
   base: {mesh: 'package://fbot_description/meshes/v2/neck_base.stl'}
   pan:

@@ -63,7 +63,12 @@ sizes) and keeps the hand-edited `driver` section of `v2.yaml`. Never commit the
   probably casters) reaching 1.5 cm below the drive-wheel contact. On a flat floor either the
   wheels would hang or the CAD caster height is wrong. The model takes the floor at the wheel
   contact (`caster_height` < 0 in `v2.yaml`).
-- **IMU:** not in the CAD; `sensors.imu` reuses the v1 pose relative to `base_link` (`todo` key).
+- **IMU:** not in the CAD; `sensors.imu` was measured on the robot (2026-11-13): chip centre
+  315 mm above the bottom of the profile box, 77 mm behind its front face, laterally centred
+  -> `base_link` (0.175, 0, 0.1416). Orientation kept from v1 (`rpy` pi, 0, -pi/2); the board may
+  be yawed 180 deg (FTDI/cable now on the robot's right seen from the front). Check: lift the
+  robot's FRONT; `/bno055/imu` `linear_acceleration.y` must go **negative** (and `z` ~ -9.8 when
+  level). If `y` goes positive, set yaw to +pi/2 (+1.570796). Yaw-rate fusion (EKF) is unaffected.
 - **Neck zero:** the neutral pose must match `neck_controller`'s 180-degree motor position;
   check the camera direction in RViz with the real neck.
 - **Femto driver frame:** `femtobolt_link` is at the centre of the Femto housing (identity);
